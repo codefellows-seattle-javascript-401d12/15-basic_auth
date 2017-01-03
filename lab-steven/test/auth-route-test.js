@@ -2,8 +2,12 @@
 
 const expect = require('chai').expect;
 const request = require('superagent');
+const mongoose = require('mongoose');
+const Promise = require('bluebird');
 const User = require('../model/user.js');
 const url = `http://localhost:${process.env.PORT}`;
+
+mongoose.Promise = Promise;
 
 require('../server.js');
 
