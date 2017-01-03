@@ -8,6 +8,9 @@ const mongoose = require('mongoose');
 const Promise = require('bluebird');
 const debug = require('debug')('cfgram:server');
 
+const authRouter = require('./route/auth-router.js');
+const errors = require('./lib/error-middleware.js');
+
 dotenv.load();
 
 const PORT = process.env.PORT;
@@ -17,6 +20,9 @@ mongoose.connect(process.env.MONGODB_URI);
 
 app.use(cors());
 app.use(morgan('dev'));
+
+app.use(authRouter);
+app.use(errors);
 
 app.listen(PORT, () => {
   debug(`server running: ${PORT}`);

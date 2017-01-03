@@ -21,7 +21,7 @@ userSchema.methods.generatePasswordHash = function(password) {
   debug('generatePasswordHash');
 
   return new Promise((resolve, reject) => {
-    bcrypt.hash(password, 15, (err, hash) => {
+    bcrypt.hash(password, 10, (err, hash) => {
       if (err) return reject(err);
       this.password = hash;
       resolve(this);

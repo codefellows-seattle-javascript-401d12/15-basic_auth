@@ -52,5 +52,46 @@ describe('Auth Routes', function() {
     });
   });
 
+  describe('GET: /api/signin', function() {
+    before(done => {
+      let user = new User(testUser);
+      user.generatePasswordHash(testUser.password)
+      .then(user => user.save())
+      .then(user => {
+        this.tempUser = user;
+        done();
+      })
+      .catch(done);
+    });
 
+    after(done => {
+      User.remove({})
+      .then(() => done())
+      .catch(done);
+    });
+
+    describe('with a valid/authenticated user', () => {
+      it('should return a token', done => {
+        request.get(`${url}/api/signin`)
+        .auth('testuser', '55555')
+        .end((err, res) => {
+          if (err) return done(err);
+          console.log('\ntoken:', res.text);
+          expect(res.status).to.equal(200);
+          done();
+        });
+      });
+    });
+
+    describe('with an invalid password/unauthenticated user', () => {
+      it('should return a 401 error', done => {
+        request.get(`${url}/api/signin`)
+        .auth('testuser', '37564')
+        .end(res => {
+          expect(res.status).to.equal(401);
+          done();
+        });
+      });
+    });
+  });
 });
