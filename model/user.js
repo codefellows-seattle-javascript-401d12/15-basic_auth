@@ -16,3 +16,27 @@ const userSchema = Schema({
   password: {type: String, required: true},
   findHash: {type: String, unique: true}
 });
+
+userSchema.methods.generatePasswordHash = function(password) {
+  debug('generatePasswordHash');
+
+  return new Promise((resolve, reject) => {
+    bcrypt.hash(password, 15, (err, hash) => {
+      if (err) return reject(err);
+      this.password = hash;
+      resolve(this);
+    });
+  });
+};
+
+userSchema.methods.comparePasswordHash = function(password) {
+  debug('comparePasswordHash');
+
+  return new Promise((resolve, reject) => {
+    bcrypt.compare(password, this.password, (err, valid) => {
+      if (err) return reject(err);
+      if (!valid) return reject(createError(401, 'invalid password'));
+      resolve(this);
+    });
+  });
+};
