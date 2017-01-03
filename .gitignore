@@ -33,6 +33,7 @@ logs
 npm-debug.log*
 node_modules
 
+
 # Runtime data
 pids
 *.pid
@@ -100,3 +101,4 @@ tags
 ### project specific ###
 temp
 img/test.bmp
+.env
