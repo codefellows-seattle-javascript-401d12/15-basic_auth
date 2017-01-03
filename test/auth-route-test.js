@@ -98,5 +98,15 @@ describe('Auth Routes', function() {
         });
       });
     });
+    describe('invalid GET route', function() {
+      it('should return a 404', done => {
+        request.get(`${url}/api/biscuit`)
+        .end((err, res) => {
+          expect(err).to.be.an('error');
+          expect(res.status).to.equal(404);
+          done();
+        });
+      });
+    });
   });
 });
