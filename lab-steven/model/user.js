@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const Promise = require('bluebird');
 const debug = require('debug')('photogram:user schema');
 const bcrypt = require('bcrypt');
+const createError = require('http-errors');
 const crypto = require('crypto');
 const Schema = mongoose.Schema;
 
@@ -25,4 +26,12 @@ userSchema.methods.createHash = function(password) {
     return Promise.resolve(this);
   })
   .catch(err => Promise.reject(err));
+};
+
+userSchema.methods.checkPassword = function(password) {
+  debug('checkPassword');
+
+  bcrypt.compare(password, this.password)
+  .then(() => Promise.resolve(this))
+  .catch(() => Promise.reject(createError(401, 'Wrong password')));
 };
