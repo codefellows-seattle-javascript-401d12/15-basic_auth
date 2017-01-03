@@ -25,7 +25,7 @@ port that is set in your environmental variable in terminal.
 In an new terminal window, send a `POST` request by using the command
 `http POST localhost:8000/api/signup username=<name> password=<password> email=<email>`.
 Example: `http POST localhost:8000/api/signup username='John' password='1234' email='john@email.com'`
-The successful response should return a hash string value along with a status code of `200`.
+The successful response should return a generated token along with a status code of `200`.
 
 ###GET Request
 
@@ -33,7 +33,7 @@ The successful response should return a hash string value along with a status co
 
 In an new terminal window, send a `GET` request by using the command `http localhost:8000/api/signin --auth <username>:<password>`.
 Example: `http localhost:8000/api/signin --auth John:test`
-The successful response should return the associated hash string provided
+The successful response should return the associated token provided
 when the user was created with a status code of `200`.
 
 ## Closing server
