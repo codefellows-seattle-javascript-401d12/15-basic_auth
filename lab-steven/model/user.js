@@ -15,3 +15,14 @@ const userSchema = Schema({
 });
 
 module.exports = mongoose.model('user', userSchema);
+
+userSchema.methods.createHash = function(password) {
+  debug('createHash');
+
+  bcrypt.hash(password, 8)
+  .then(hash => {
+    this.password = hash;
+    return Promise.resolve(this);
+  })
+  .catch(err => Promise.reject(err));
+};
