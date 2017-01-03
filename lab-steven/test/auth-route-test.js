@@ -90,7 +90,7 @@ describe('Auth routes', function() {
       it('should return a 401 error', done => {
         request
         .get(`${url}/api/signin`)
-        .auth('Test  user', 'Weasel')
+        .auth('Test user', 'Weasel')
         .end((err, response) => {
           expect(err).to.be.an('error');
           expect(response.status).to.equal(401);
