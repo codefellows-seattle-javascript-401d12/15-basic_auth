@@ -25,10 +25,10 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+.env
 
 ### Node ###
 node_modules
-.env
 # Logs
 logs
 *.log

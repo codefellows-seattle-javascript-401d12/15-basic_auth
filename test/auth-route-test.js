@@ -21,6 +21,7 @@ const exampleUser = {
 };
 
 describe('Auth routes', function(){
+
   describe('POST: /api/signup', function(){
     debug('POST: /api/signup');
 
@@ -29,17 +30,77 @@ describe('Auth routes', function(){
       .then( () => done())
       .catch(done);
     });
-
-    it('should return a token', done => {
-      require.post(`${url}/api/signup`)
-      .send((err, res) => {
+    it('should say invalid path', done => {
+      request.post(`${url}/api/sig`)
+      .end((err, res) => {
         if(err) return done(err);
-
-        console.log('\ntoken: ', res.text);
-        expect(res.status).to.equal(200);
+        expect(res.status).to.equal(404);
       });
+      done();
+    });
+
+    it('should say body is invalid', done => {
+      request.post(`${url}/api/signup`)
+      .end((err, res) => {
+        if(err) return done(err);
+        expect(res.status).to.equal(400);
+      });
+      done();
+    });
+    it('should return a token', done => {
+      request.post(`${url}/api/signup`)
+      .send(exampleUser)
+      .end((err, res) => {
+        if(err) return done(err);
+        expect(res.status).to.equal(200);
+        expect(res).to.have.property('text');
+      });
+      done();
+    });
+  });
+  describe('GET: /api/signin', function(){
+    debug('GET: /api/signin');
+    before( done => {
+      new User(exampleUser).save()
+     .then(user => {
+       this.tempUser = user;
+       done();
+     })
+     .catch(done);
+    });
+    after( done => {
+      User.remove({})
+      .then( () => done())
+      .catch(done);
+    });
+    it('should say invalid path', done => {
+      request.get(`${url}/api/sig`)
+      .end((err, res) => {
+        if(err) return done(err);
+        expect(res.status).to.equal(404);
+      });
+      done();
+    });
+    it('should say user could not be authenticated', done => {
+      request.get(`${url}/api/signin`)
+      .send({'--auth': 'exampleUser:123'})
+      .end((err, res) => {
+        if(err) return done(err);
+        expect(res.status).to.equal(401);
+      });
+      done();
     });
 
 
+    it('should get a token', done => {
+      request.get(`${url}/api/signin`)
+      .send({'--auth': 'exampleUser:1234'})
+      .end((err, res) => {
+        if(err) return done(err);
+        expect(res.status).to.equal(200);
+        expect(res).to.have.property('text');
+      });
+      done();
+    });
   });
 });

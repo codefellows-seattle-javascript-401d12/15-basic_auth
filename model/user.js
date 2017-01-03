@@ -13,17 +13,18 @@ const Schema = mongoose.Schema;
 
 const userSchema = Schema({
   username: { type: String, required: true, unique: true},
-  emailusername: { type: String, required: true, unique: true},
+  email: { type: String, required: true, unique: true},
   password: { type: String, required: true},
   findHash: {type: String, unique:true}
 });
 
-userSchema.method.generatePasswordHash = function(password){
+userSchema.methods.generatePasswordHash = function(password){
   debug('generatePasswordHash');
+
 
   return new Promise((resolve, reject) => {
     bcrypt.hash(password, 10, (err, hash) => {
-      if (err) return reject(err);
+      if (err) return reject(createError(400, 'bad request'));
       this.password = hash;
       resolve(true);
     });
@@ -33,11 +34,11 @@ userSchema.method.generatePasswordHash = function(password){
 userSchema.methods.comparePasswordHash = function(password){
   debug('comparePasswordHash');
 
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     bcrypt.compare(password, this.password, (err, valid) => {
-      if(err) return reject(err);
+      if (err) return reject(createError(400, 'bad request'));
 
-      if(!valid) return reject(createError(404, 'wrong password'));
+      if(!valid) return reject(createError(401, 'Unauthorized User'));
 
       resolve(this);
     });
@@ -47,11 +48,11 @@ userSchema.methods.comparePasswordHash = function(password){
 userSchema.methods.generateFindHash = function(){
   debug('generateFindHash');
 
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     let tries = 0;
-    _generateFindHash(this);
+    _generateFindHash.call(this);
     function _generateFindHash(){
-      this.findHash = crypto.rendomByte(32).toString('hex');
+      this.findHash = crypto.randomBytes(32).toString('hex');
       this.save()
       .then( () => resolve(this.findHash))
       .catch(err => {
@@ -66,7 +67,7 @@ userSchema.methods.generateFindHash = function(){
 userSchema.methods.generateToken = function(){
   debug('generateToken');
 
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     this.generateFindHash()
     .then( findHash => resolve(jwt.sign({token: findHash}, process.env.APP_SECRET)))
     .catch( err => reject(err));

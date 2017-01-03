@@ -2,6 +2,7 @@
 
 const jsonParser = require('body-parser').json();
 const debug = require('debug')('cfgram:auth-router');
+const createError = require('http-errors');
 const Router = require('express').Router;
 const basicAuth = require('../lib/basic-auth-middleware.js');
 
@@ -18,8 +19,8 @@ authRouter.post('/api/signup', jsonParser, function(req, res, next) {
   let user = new User(req.body);
 
   user.generatePasswordHash(password)
-  .then( user => user.save())
-  .then( user => user.generateToken())
+  .then(() => user.save())
+  .then( () => user.generateToken())
   .then( token => res.send(token))
   .catch(next);
 });
