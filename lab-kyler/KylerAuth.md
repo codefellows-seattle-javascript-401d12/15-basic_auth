@@ -1,5 +1,4 @@
-![cf](https://i.imgur.com/7v5ASc8.png) Lab 15 - Basic Auth
-Kyler Dotson
+![cf](https://i.imgur.com/7v5ASc8.png) Lab 15 - Basic Auth - Kyler Dotson
 ======
 
 ## Features
