@@ -10,13 +10,8 @@ const authRouter = module.exports = Router();
 authRouter.post('/api/createuser', parseJSON, function(request, response, next) {
   debug('POST: /api/createuser');
 
-  if (!request.body.username) {
-    response.status(400).send('No username provided.');
-    return;
-  }
-
-  if (!request.body.password) {
-    response.status(400).send('No password provided.');
+  if (!request.body.username || !request.body.password || !request.body.email) {
+    response.status(400).send('Bad request.');
     return;
   }
 
