@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "DEBUG='cfgram' mocha",
-    "start": "DEBUG='cfgram' node server.js"
+    "test": "DEBUG='cfgram*' mocha",
+    "start": "DEBUG='cfgram*' node server.js"
   },
   "repository": {
     "type": "git",
