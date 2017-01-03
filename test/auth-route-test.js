@@ -37,30 +37,66 @@ describe('Auth Routes', function() {
         });
       });
     });
+    describe('invalid POST route', function() {
+      it('should return a 404 code', done => {
+        request.post(`${url}/api/invalid`)
+        .send(exampleUser)
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(err).to.be.an('error');
+          expect(res.status).to.equal(404);
+          done();
+        });
+      });
+    });
+    describe('bad request', function() {
+      it('should return a 400 code', done => {
+        request.post(`${url}/api/signup`)
+        .send({username: 'test name', password: '1234'})
+        .end((err, res) => {
+          if(err) return done(err);
+          expect(err).to.be.an('error');
+          expect(res.status).to.equal(400);
+          done();
+        });
+      });
+    });
   });
   describe('GET: /api/signin', function() {
+    before( done => {
+      let user = new User(exampleUser);
+      user.generatePasswordHash(exampleUser.password)
+      .then( user => user.save())
+      .then( user => {
+        this.tempUser = user;
+        done();
+      })
+      .catch(done);
+    });
+    after( done => {
+      User.remove({})
+      .then( () => done())
+      .catch(done);
+    });
     describe('with a valid body', function() {
-      before( done => {
-        let user = new User(exampleUser);
-        user.generatePasswordHash(exampleUser.password)
-        .then( user => user.save())
-        .then( user => {
-          this.tempUser = user;
-          done();
-        })
-        .catch(done);
-      });
-      after( done => {
-        User.remove({})
-        .then( () => done())
-        .catch(done);
-      });
-      it('shoulde return a token', done => {
+      it('should return a token', done => {
         request.get(`${url}/api/signin`)
         .auth('exampleuser', '1234')
         .end((err, res) => {
           if(err) return done(err);
           expect(res.status).to.equal(200);
+          done();
+        });
+      });
+    });
+    describe('with an invalid body', function() {
+      it('should return a 401', done => {
+        request.get(`${url}/api/signin`)
+        .auth('exampleuser', '1111')
+        .end((err, res) => {
+          if(err) return done(err);
+          expect(err).to.be.an('error');
+          expect(res.status).to.equal(401);
           done();
         });
       });
