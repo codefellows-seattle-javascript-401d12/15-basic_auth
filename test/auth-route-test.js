@@ -42,7 +42,6 @@ describe('Auth Routes', function() {
         request.post(`${url}/api/invalid`)
         .send(exampleUser)
         .end((err, res) => {
-          if (err) return done(err);
           expect(err).to.be.an('error');
           expect(res.status).to.equal(404);
           done();
@@ -54,7 +53,6 @@ describe('Auth Routes', function() {
         request.post(`${url}/api/signup`)
         .send({username: 'test name', password: '1234'})
         .end((err, res) => {
-          if(err) return done(err);
           expect(err).to.be.an('error');
           expect(res.status).to.equal(400);
           done();
@@ -94,7 +92,6 @@ describe('Auth Routes', function() {
         request.get(`${url}/api/signin`)
         .auth('exampleuser', '1111')
         .end((err, res) => {
-          if(err) return done(err);
           expect(err).to.be.an('error');
           expect(res.status).to.equal(401);
           done();
