@@ -107,7 +107,7 @@ describe('Auth Routes', function() {
 
     describe('with an unregistered route', () => {
       it('should return a 404 error', done => {
-        request.post(`${url}/api/sign`)
+        request.get(`${url}/api/sign`)
         .auth('testuser', '55555')
         .end(res => {
           expect(res.status).to.equal(404);
