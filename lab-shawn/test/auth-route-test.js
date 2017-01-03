@@ -99,6 +99,7 @@ describe('Auth Routes', function(){
         .auth('exampleuser', '5678')
         .end(res => {
           expect(res.status).to.equal(401);
+          expect(res.body).to.equal(undefined);
           done();
         });
       });

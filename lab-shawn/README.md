@@ -27,4 +27,4 @@ In a new terminal window/tab run your HTTP method commands
 ### **GET Request**
 
   * To authenticate user log in.  
-    `http GET localhost:[port]/api/signin username='[name]' password='[password]'`
+    `http GET localhost:[port]/api/signin --auth [username]:[password]`
