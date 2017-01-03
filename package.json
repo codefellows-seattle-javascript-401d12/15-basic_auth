@@ -1,0 +1,20 @@
+{
+  "name": "15-basic_auth",
+  "version": "1.0.0",
+  "description": "",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/peterkim2/15-basic_auth.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/peterkim2/15-basic_auth/issues"
+  },
+  "homepage": "https://github.com/peterkim2/15-basic_auth#readme"
+}
