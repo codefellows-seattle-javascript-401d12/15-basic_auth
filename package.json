@@ -4,7 +4,8 @@
   "description": "",
   "main": "gulpfile.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "DEBUG='cfgram*' mocha",
+    "start": "DEBUG='cfgram*' node server.js"
   },
   "repository": {
     "type": "git",
