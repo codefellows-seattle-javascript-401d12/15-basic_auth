@@ -38,15 +38,26 @@ describe('Auth Routes', function() {
           done();
         });
       });
+    });
 
-      describe('with an invalid body', () => {
-        it('should return a 400 error', done => {
-          request.post(`${url}/api/signup`)
-          .send({username: 'invaliduser'})
-          .end(res => {
-            expect(res.status).to.equal(400);
-            done();
-          });
+    describe('with an invalid body', () => {
+      it('should return a 400 error', done => {
+        request.post(`${url}/api/signup`)
+        .send({username: 'invaliduser'})
+        .end(res => {
+          expect(res.status).to.equal(400);
+          done();
+        });
+      });
+    });
+
+    describe('with an unregistered route', () => {
+      it('should return a 404 error', done => {
+        request.post(`${url}/api/sign`)
+        .send(testUser)
+        .end(res => {
+          expect(res.status).to.equal(404);
+          done();
         });
       });
     });
@@ -89,6 +100,17 @@ describe('Auth Routes', function() {
         .auth('testuser', '37564')
         .end(res => {
           expect(res.status).to.equal(401);
+          done();
+        });
+      });
+    });
+
+    describe('with an unregistered route', () => {
+      it('should return a 404 error', done => {
+        request.post(`${url}/api/sign`)
+        .auth('testuser', '55555')
+        .end(res => {
+          expect(res.status).to.equal(404);
           done();
         });
       });
