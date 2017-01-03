@@ -18,6 +18,19 @@ const exampleMember = {
   email: 'exampleMember@mailtest.com'
 };
 
+const exampleBadRequest = {
+  usernam: 'examplemember',
+  password: '12345678',
+  email: 'exampleMember@mailtest.com'
+};
+
+const notValidUser = {
+  username: 'someoneElse',
+  password: '12345678',
+  email: 'exampleMember@mailtest.com'
+};
+
+
 describe('Auth Routes', function() {
   describe('POST: /api/createAccount', function() {
     describe('with a valid body', function() {
@@ -34,6 +47,23 @@ describe('Auth Routes', function() {
           if(err) return done(err);
           expect(res.status).to.equal(200);
           expect(res.text).to.be.a('string');
+          done();
+        });
+      });
+    });
+
+    describe('with an invalid body', function() {
+      after( done => {
+        Member.remove({})
+        .then( () => done())
+        .catch(done);
+      });
+
+      it('should respond with a 400', done => {
+        request.post(`${url}/api/createAccount`)
+        .send(exampleBadRequest)
+        .end((err, res) => {
+          expect(res.status).to.equal(400);
           done();
         });
       });
@@ -65,6 +95,34 @@ describe('Auth Routes', function() {
         .end((err, res) => {
           if(err) return done(err);
           expect(res.status).to.equal(200);
+          done();
+        });
+      });
+    });
+
+    describe('with an invalid user', function() {
+      before( done => {
+        let member = new Member(exampleMember);
+        member.generatePasswordHash(exampleMember.password)
+        .then( () => member.save())
+        .then( () => {
+          this.tempMember = member;
+          done();
+        })
+        .catch(done);
+      });
+
+      after( done => {
+        Member.remove({})
+        .then( () => done())
+        .catch(done);
+      });
+
+      it('should respond with a 401', done => {
+        request.get(`${url}/api/login`)
+        .auth(exampleMember.username, 'falsepassword')
+        .end((err, res) => {
+          expect(res.status).to.equal(401);
           done();
         });
       });
