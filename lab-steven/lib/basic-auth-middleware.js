@@ -6,7 +6,7 @@ const debug = require('debug')('photogram:basic auth middleware');
 module.exports = function(request, response, next) {
   debug('Basic auth');
 
-  var authHeader = request.body.authorization;
+  var authHeader = request.headers.authorization;
   if (!authHeader) return next(createError(401, 'No authorization header provided.'));
 
   var base64str = authHeader.split('Basic ')[1];
