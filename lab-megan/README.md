@@ -12,7 +12,7 @@ Clone this repo at branch `15-basic-auth` and type `npm i` in your terminal to d
 This will return a password hash.
 
 ##### - GET Requests
-```http localhost:8000/api/signin -a "User Name":"password"
+```http localhost:8000/api/signin -a "User Name":"password"```
 This will return a password hash.
 
 Note: in the post and get lines above please replace the port number with whatever port is noted when you start.
