@@ -34,8 +34,10 @@ userSchema.methods.checkPassword = function(password) {
 
   return new Promise((resolve, reject) => {
     bcrypt.compare(password, this.password)
-    .then(() => resolve(this))
-    .catch(() => reject(createError(401, 'Wrong password')));
+    .then(result => {
+      if (!result) return reject(createError(401, 'Wrong password.'));
+      return resolve(this);
+    });
   });
 };
 
