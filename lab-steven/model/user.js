@@ -16,24 +16,27 @@ const userSchema = Schema({
   findHash: {type: String, unique: true}
 });
 
-
 userSchema.methods.createHash = function(password) {
   debug('createHash');
 
-  bcrypt.hash(password, 8)
-  .then(hash => {
-    this.password = hash;
-    return Promise.resolve(this);
-  })
-  .catch(err => Promise.reject(err));
+  return new Promise((resolve, reject) => {
+    bcrypt.hash(password, 8)
+    .then(hash => {
+      this.password = hash;
+      return resolve(this);
+    })
+    .catch(err => reject(err));
+  });
 };
 
 userSchema.methods.checkPassword = function(password) {
   debug('checkPassword');
 
-  bcrypt.compare(password, this.password)
-  .then(() => Promise.resolve(this))
-  .catch(() => Promise.reject(createError(401, 'Wrong password')));
+  return new Promise((resolve, reject) => {
+    bcrypt.compare(password, this.password)
+    .then(() => resolve(this))
+    .catch(() => reject(createError(401, 'Wrong password')));
+  });
 };
 
 userSchema.methods.generateFindHash = function() {
@@ -41,18 +44,20 @@ userSchema.methods.generateFindHash = function() {
 
   let tries = 0;
 
-  _generateFindHash.call(this);
+  return new Promise((resolve, reject) => {
+    _generateFindHash.call(this);
 
-  function _generateFindHash() {
-    this.findHash = crypto.randomBytes(25).toString();
-    this.save()
-    .then(() => Promise.resolve(this.findHash))
-    .catch(() => {
-      if (tries > 3) return Promise.reject(createError(500, 'Exceeded number of tries to find hash.'));
-      tries++;
-      _generateFindHash.call(this);
-    });
-  }
+    function _generateFindHash() {
+      this.findHash = crypto.randomBytes(25).toString();
+      this.save()
+      .then(() => resolve(this.findHash))
+      .catch(() => {
+        if (tries > 3) return reject(createError(500, 'Exceeded number of tries to find hash.'));
+        tries++;
+        _generateFindHash.call(this);
+      });
+    }
+  });
 };
 
 userSchema.methods.createToken = function() {
