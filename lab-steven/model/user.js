@@ -16,7 +16,6 @@ const userSchema = Schema({
   findHash: {type: String, unique: true}
 });
 
-module.exports = mongoose.model('user', userSchema);
 
 userSchema.methods.createHash = function(password) {
   debug('createHash');
@@ -63,3 +62,5 @@ userSchema.methods.createToken = function() {
   .then(foundHash => Promise.resolve(jwt.sign({token: foundHash}, process.env.APP_SECRET)))
   .catch(err => Promise.reject(err));
 };
+
+module.exports = mongoose.model('user', userSchema);
