@@ -65,9 +65,11 @@ userSchema.methods.generateFindHash = function() {
 userSchema.methods.createToken = function() {
   debug('createToken');
 
-  this.generateFindHash()
-  .then(foundHash => Promise.resolve(jwt.sign({token: foundHash}, process.env.APP_SECRET)))
-  .catch(err => Promise.reject(err));
+  return new Promise((resolve, reject) => {
+    this.generateFindHash()
+    .then(foundHash => resolve(jwt.sign({token: foundHash}, process.env.APP_SECRET)))
+    .catch(err => reject(err));
+  });
 };
 
 module.exports = mongoose.model('user', userSchema);
