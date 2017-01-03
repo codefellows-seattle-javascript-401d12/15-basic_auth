@@ -107,4 +107,18 @@ describe('Authorization Routes', function() {
     });
   });
 
+  // --------------
+  // BAD ROUTE test
+  // --------------
+
+  describe('WITH AN INVALID PATH', function() {
+    it('should return a 404 error', done => {
+      request.get(`${url}/api/notapath`)
+      .end((err, res) => {
+        expect(res.status).to.equal(404);
+        done();
+      });
+    });
+  });
+
 });
