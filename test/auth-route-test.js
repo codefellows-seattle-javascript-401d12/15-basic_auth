@@ -19,7 +19,7 @@ const exampleUser = {
 };
 
 describe('Auth Routes', function() {
-  describe('POST: /api/signup/', function() {
+  describe('POST: /api/signup', function() {
     describe('with a valid body', function() {
       after( done => {
         User.remove({})
@@ -27,12 +27,12 @@ describe('Auth Routes', function() {
         .catch(done);
       });
       it('should return a token', done => {
-        request.post(`${url}/api.signup`)
+        request.post(`${url}/api/signup`)
         .send(exampleUser)
         .end((err, res) => {
           if(err) return done(err);
           expect(res.status).to.equal(200);
-          expect(res.text).to.equal('string');
+          expect(res.text).to.be.a('string');
           done();
         });
       });
