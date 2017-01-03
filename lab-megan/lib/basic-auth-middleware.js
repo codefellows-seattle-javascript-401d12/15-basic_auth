@@ -7,7 +7,6 @@ module.exports = function(req, res, next) {
   debug('auth');
 
   var authHeader = req.headers.authorization;
-  // console.log(req.headers);
   if (!authHeader) {
     return next(createError(401, 'authorization header is required'));
   }

@@ -11,7 +11,6 @@ const authRouter = module.exports = Router();
 
 authRouter.post('/api/signup', jsonParser, function(req, res, next) {
   debug('POST /api/signup');
-  // console.log('::: reached inside authRouter.post method');
 
   let password = req.body.password;
   delete req.body.password;
@@ -27,7 +26,6 @@ authRouter.post('/api/signup', jsonParser, function(req, res, next) {
 
 authRouter.get('/api/signin', basicAuth, function(req, res, next) {
   debug('GET /api/signin');
-  // console.log('::: reached inside authRouter.get method');
 
   User.findOne({ username: req.auth.username })
   .then( user => user.comparePasswordHash(req.auth.password))

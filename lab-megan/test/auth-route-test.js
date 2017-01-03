@@ -38,7 +38,6 @@ describe('Authorization Routes', function() {
         .send(exampleUser)
         .end((err, res) => {
           if (err) return done(err);
-          // console.log('\ntoken:', res.text, '\n');
           expect(res.status).to.equal(200);
           expect(res.text).to.be.a('string');
           done();
@@ -85,14 +84,10 @@ describe('Authorization Routes', function() {
       });
 
       it('should return a token', done => {
-        // console.log('::: reached inside it statement of GET test');
         request.get(`${url}/api/signin`)
         .auth('exampleuser', '1234')
         .end((err, res) => {
           if (err) return done(err);
-          // console.log('\nuser:', this.tempUser);
-          // console.log('\ntoken:', res.text);
-          // console.log('::: inside expect of GET test');
           expect(res.status).to.equal(200);
           done();
         });
