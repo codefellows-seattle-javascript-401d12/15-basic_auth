@@ -19,8 +19,14 @@ const exampleUser = {
 };
 
 describe('Authorization Routes', function() {
+
+  // ----------
+  // POST tests
+  // ----------
+
   describe('POST: /api/signup', function() {
-    describe('with a valid body', function() {
+
+    describe('WITH A VALID BODY', function() {
       after( done => {
         User.remove({})
         .then( () => done())
@@ -32,17 +38,35 @@ describe('Authorization Routes', function() {
         .send(exampleUser)
         .end((err, res) => {
           if (err) return done(err);
-          console.log('\ntoken:', res.text, '\n');
+          // console.log('\ntoken:', res.text, '\n');
           expect(res.status).to.equal(200);
           expect(res.text).to.be.a('string');
           done();
         });
       });
+
     });
+
+    describe('WITH AN INVALID BODY', function() {
+      it('should return a 400 error', done => {
+        request.post(`${url}/api/signup`)
+        .send({username: '', password: ''})
+        .end((err, res) => {
+          expect(res.status).to.equal(400);
+          done();
+        });
+      });
+    });
+
   });
 
+  // ---------
+  // GET tests
+  // ---------
+
   describe('GET: /api/signin', function() {
-    describe('with a valid body', function() {
+
+    describe('WITH A VALID BODY', function() {
       before( done => {
         let user = new User(exampleUser);
         user.generatePasswordHash(exampleUser.password)
@@ -61,18 +85,31 @@ describe('Authorization Routes', function() {
       });
 
       it('should return a token', done => {
-        console.log('::: reached inside it statement of GET test');
+        // console.log('::: reached inside it statement of GET test');
         request.get(`${url}/api/signin`)
         .auth('exampleuser', '1234')
         .end((err, res) => {
           if (err) return done(err);
           // console.log('\nuser:', this.tempUser);
           // console.log('\ntoken:', res.text);
-          console.log('::: inside expect of GET test');
+          // console.log('::: inside expect of GET test');
           expect(res.status).to.equal(200);
           done();
         });
       });
+
+      describe('WITH AN INVALID PASSWORD', function() {
+        it('should return a 401 error', done => {
+          request.get(`${url}/api/signin`)
+          .auth('exampleuser', '5678')
+          .end((err, res) => {
+            expect(res.status).to.equal(401);
+            done();
+          });
+        });
+      });
+
     });
   });
+
 });
