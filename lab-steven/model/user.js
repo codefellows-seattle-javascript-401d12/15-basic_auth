@@ -35,3 +35,22 @@ userSchema.methods.checkPassword = function(password) {
   .then(() => Promise.resolve(this))
   .catch(() => Promise.reject(createError(401, 'Wrong password')));
 };
+
+userSchema.methods.generateFindHash = function() {
+  debug('generateFindHash');
+
+  let tries = 0;
+
+  _generateFindHash.call(this);
+
+  function _generateFindHash() {
+    this.findHash = crypto.randomBytes(25).toString();
+    this.save()
+    .then(() => Promise.resolve(this.findHash))
+    .catch(() => {
+      if (tries > 3) return Promise.reject(createError(500, 'Exceeded number of tries to find hash.'));
+      tries++;
+      _generateFindHash.call(this);
+    });
+  }
+};
