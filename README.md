@@ -27,7 +27,7 @@ This is a basic app that allows a developer to POST and GET data via authorizati
   * **i.e.** 200 OK request: `http :8000/api/signin --auth user1:hey2434`
     * You must pass in the username and password for authentication separated by a colon.
     * You should receive a response with an encrypted token.
-  * **i.e.** 401 Unauthorized request: `http :8000/api/signin --auth user1`
+  * **i.e.** 401 Unauthorized request: `http :8000/api/signin --auth user1` (no password in this GET request)
     * You should receive a response with a 'Unauthorized' message.
 
 POST and GET request commands should be run in the second terminal pane.
