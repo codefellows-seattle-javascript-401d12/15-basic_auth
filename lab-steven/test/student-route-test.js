@@ -144,5 +144,18 @@ describe('Student routes', function() {
         });
       });
     });
+
+    describe('With no token', () => {
+      it('should return a 401 unauthorized error', done => {
+        request
+        .get(`${url}/api/student/${this.tempStudent._id}`)
+        .end((err, response) => {
+          expect(err).to.be.an('error');
+          expect(response.status).to.equal(401);
+          expect(response.body.name).to.equal(undefined);
+          done();
+        });
+      });
+    });
   });
 });
