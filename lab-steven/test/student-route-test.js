@@ -209,5 +209,19 @@ describe('Student routes', function() {
         });
       });
     });
+
+    describe('With no token provided', () => {
+      it('should return a 401 error', done => {
+        request
+        .put(`${url}/api/student/${this.tempStudent._id}`)
+        .send({name: 'New name', age: 10})
+        .end((err, response) => {
+          expect(err).to.be.an('error');
+          expect(response.status).to.equal(401);
+          expect(response.body.name).to.equal(undefined);
+          done();
+        });
+      });
+    });
   });
 });
