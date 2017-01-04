@@ -223,5 +223,19 @@ describe('Student routes', function() {
         });
       });
     });
+
+    describe('With no body provided', () => {
+      it('should return a 400 error', done => {
+        request
+        .put(`${url}/api/student/${this.tempStudent._id}`)
+        .set({authorization: `Bearer ${this.tempToken}`})
+        .end((err, response) => {
+          expect(err).to.be.an('error');
+          expect(response.status).to.equal(400);
+          expect(response.body.name).to.equal(undefined);
+          done();
+        });
+      });
+    });
   });
 });
