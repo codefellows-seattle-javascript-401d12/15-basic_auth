@@ -205,7 +205,7 @@ describe('Publisher Routes', function() {
       delete testPublisher.userID;
     });
 
-    it.only('should return a new publisher', done => {
+    it('should return a new publisher', done => {
       request.put(`${url}/api/publisher/${this.tempPublisher._id}`)
       .set({
         Authorization: `Bearer ${this.tempToken}`
@@ -225,5 +225,47 @@ describe('Publisher Routes', function() {
       });
     });
 
+    it('should return a 401 error for unauthorized user', done => {
+      request.put(`${url}/api/publisher/${this.tempPublisher._id}`)
+      .set({
+        Authorization: 'Bearer '
+      })
+      .send({
+        name: 'new publisher name',
+        desc: 'new publisher description'
+      })
+      .end(res => {
+        expect(res.status).to.equal(401);
+        done();
+      });
+    });
+
+    it('should return a 400 error for an invalid body', done => {
+      request.put(`${url}/api/publisher/${this.tempPublisher._id}`)
+      .set({
+        Authorization: `Bearer ${this.tempToken}`
+      })
+      .send({name: 'invalid publisher'})
+      .end(res => {
+        expect(res.status).to.equal(400);
+        expect(res.body).to.equal(undefined);
+        done();
+      });
+    });
+
+    it('should return a 404 error for unregistered route', done => {
+      request.put(`${url}/api/unregistered-route/${this.tempPublisher._id}`)
+      .set({
+        Authorization: `Bearer ${this.tempToken}`
+      })
+      .send({
+        name: 'new publisher name',
+        desc: 'new publisher description'
+      })
+      .end(res => {
+        expect(res.status).to.equal(404);
+        done();
+      });
+    });
   });
 });

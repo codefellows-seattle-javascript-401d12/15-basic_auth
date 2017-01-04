@@ -45,7 +45,7 @@ publisherRouter.put('/api/publisher/:id', bearerAuth, jsonParser, function(req, 
     return;
   }
 
-  Publisher.findByIdAndUpdate(req.params, req.body, {new: true})
+  Publisher.findByIdAndUpdate(req.params.id, req.body, {new: true})
   .then(publisher => {
     if (publisher.userID.toString() !== req.user._id.toString()) {
       return next(createError(401, 'invalid user'));
