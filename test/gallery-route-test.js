@@ -35,7 +35,7 @@ describe('Gallery Routes', function() {
     .catch(done);
   });
   describe('POST: /api/gallery', () => {
-    before( done => {
+    beforeEach( done => {
       new User(exampleUser)
       .generatePasswordHash(exampleUser.password)
       .then( user => user.save())
@@ -73,6 +73,20 @@ describe('Gallery Routes', function() {
         let date = new Date(res.body.created).toString();
         expect(err).to.be.an('error');
         expect(res.status).to.equal(401);
+        expect(date).to.equal('Invalid Date');
+        done();
+      });
+    });
+    it('should return a 400 bad request', done => {
+      request.post(`${url}/api/gallery`)
+      .send({name: 10})
+      .set({
+        Authorization: `Bearer ${this.tempToken}`
+      })
+      .end((err, res) => {
+        let date = new Date(res.body.created).toString();
+        expect(err).to.be.an('error');
+        expect(res.status).to.equal(400);
         expect(date).to.equal('Invalid Date');
         done();
       });
