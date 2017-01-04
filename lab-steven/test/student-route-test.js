@@ -172,4 +172,42 @@ describe('Student routes', function() {
       });
     });
   });
+
+  describe('PUT: /api/student/:id', () => {
+    beforeEach(done => {
+      new User(sampleUser)
+      .createHash(sampleUser.password)
+      .then(user => {
+        this.tempUser = user;
+        return user.createToken();
+      })
+      .then(token => {
+        this.tempToken = token;
+        sampleStudent.userID = this.tempUser._id;
+        return new Student(sampleStudent).save();
+      })
+      .then(student => {
+        this.tempStudent = student;
+        done();
+      })
+      .catch(done);
+    });
+
+    describe('With a valid body and token', () => {
+      it('should return a student', done => {
+        request
+        .put(`${url}/api/student/${this.tempStudent._id}`)
+        .set({authorization: `Bearer ${this.tempToken}`})
+        .send({name: 'New name', age: 10})
+        .end((err, response) => {
+          if (err) return done(err);
+          expect(response.status).to.equal(200);
+          expect(response.body.name).to.equal('New name');
+          expect(response.body.age).to.equal(10);
+          expect(response.body.userID).to.equal(this.tempUser._id.toString());
+          done();
+        });
+      });
+    });
+  });
 });
