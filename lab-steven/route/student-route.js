@@ -24,3 +24,14 @@ studentRouter.get('/api/student', bearAuth, function(request, response, next) {
   .then(arrayOfStudents => response.send(arrayOfStudents.map(student => student._id)))
   .catch(next);
 });
+
+studentRouter.get('/api/student/:id', bearAuth, function(request, response, next) {
+  debug('GET: /api/student/:id');
+
+  Student.findById(request.params.id)
+  .then(student => {
+    if (student.userID.toString() !== request.user._id.toString()) return next(createError(401, 'Wrong user'));
+    response.json(student);
+  })
+  .catch(next);
+});
