@@ -9,6 +9,7 @@ const Promise = require('bluebird');
 const debug = require('debug')('cfgram:server');
 
 const authRouter = require('./route/auth-router.js');
+const vaultRouter = require('./route/vault-router.js');
 const errors = require('./lib/error-middleware');
 
 dotenv.load();
@@ -25,6 +26,7 @@ app.use(cors());
 app.use(morgan('dev'));
 
 app.use(authRouter);
+app.use(vaultRouter);
 app.use(errors);
 
 app.listen(PORT, () => {

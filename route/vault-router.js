@@ -31,3 +31,19 @@ vaultRouter.get('/api/vault/:id', bearerAuth, function(req, res, next) {
   })
   .catch(next);
 });
+
+vaultRouter.put('/api/vault/:id', bearerAuth, jsonParser, function(req, res, next) {
+  debug('PUT: /api/vault/:id');
+
+  Vault.findByIdAndUpdate(req.params.id, req.body, {new: true})
+  .then( vault => res.json(vault))
+  .catch( err => next(createError(404, err.message)));
+});
+
+vaultRouter.delete('/api/vault/:id', function(req, res, next) {
+  debug('DELETE: /api/vault/:id');
+
+  Vault.findByIdAndRemove(req.params.id)
+  .then( () => res.status(204).send())
+  .catch( err => next(createError(404, err.messgae)));
+});
