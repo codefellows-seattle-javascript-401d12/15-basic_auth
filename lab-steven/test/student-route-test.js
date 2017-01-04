@@ -34,21 +34,21 @@ describe('Student routes', function() {
   });
 
   describe('POST: /api/student', () => {
-    describe('With a valid body', () =>  {
-      before(done => {
-        new User(sampleUser)
-        .createHash(sampleUser.password)
-        .then(user => {
-          this.tempUser = user;
-          return user.createToken();
-        })
-        .then(token => {
-          this.tempToken = token;
-          done();
-        })
-        .catch(done);
-      });
+    beforeEach(done => {
+      new User(sampleUser)
+      .createHash(sampleUser.password)
+      .then(user => {
+        this.tempUser = user;
+        return user.createToken();
+      })
+      .then(token => {
+        this.tempToken = token;
+        done();
+      })
+      .catch(done);
+    });
 
+    describe('With a valid body', () =>  {
       it('should return a student', done => {
         request
         .post(`${url}/api/student`)
@@ -60,6 +60,20 @@ describe('Student routes', function() {
           expect(response.body.name).to.equal(sampleStudent.name);
           expect(response.body.age).to.equal(sampleStudent.age);
           expect(response.body.userID).to.equal(this.tempUser._id.toString());
+          done();
+        });
+      });
+    });
+
+    describe('With no token', () => {
+      it('should return a 401 unauthorized error', done => {
+        request
+        .post(`${url}/api/student`)
+        .send(sampleStudent)
+        .end((err, response) => {
+          expect(err).to.be.an('error');
+          expect(response.status).to.equal(401);
+          expect(response.body.name).to.equal(undefined);
           done();
         });
       });
