@@ -29,7 +29,7 @@ userSchema.methods.generatePasswordHash = function (password) {
   });
 };
 
-userSchema.comparePasswordHash = function(password) {
+userSchema.methods.comparePasswordHash = function(password) {
   debug('comparePasswordHash');
 
   return new Promise((resolve, reject) => {
