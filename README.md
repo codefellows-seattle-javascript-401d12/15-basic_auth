@@ -2,7 +2,7 @@
 
 This is a fun project where we created basic and bearer authentication for a basic Instagram API called picgram.
 
-A visualization of the project may be seen here ![alt img](https://raw.githubusercontent.com/codefellows/seattle-javascript-401d12/master/16-bearer_auth/demo/visualization/picgram.png). Credit: [Brian Nations](https://github.com/bnates)
+A visualization of the project may be seen here ![alt img](https://raw.githubusercontent.com/codefellows/seattle-javascript-401d12/master/16-bearer_auth/demo/visualization/cfgram.png). Credit: [Brian Nations](https://github.com/bnates)
 
 ### Get the Project Running
 
