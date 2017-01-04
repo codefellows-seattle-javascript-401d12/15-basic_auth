@@ -26,5 +26,5 @@ app.use(authRouter);
 app.use(errors);
 
 app.listen(PORT, () => {
-  console.log(`Server running on ${PORT}`);
+  debug(`Server running on ${PORT}`);
 });

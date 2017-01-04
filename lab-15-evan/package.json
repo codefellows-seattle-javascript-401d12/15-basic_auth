@@ -28,6 +28,8 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
+    "gulp-eslint": "^3.0.1",
+    "gulp-mocha": "^3.0.1",
     "mocha": "^3.2.0",
     "superagent": "^3.3.1"
   }

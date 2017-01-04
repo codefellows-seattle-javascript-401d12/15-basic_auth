@@ -58,7 +58,7 @@ memberSchema.methods.generateFindHash = function() {
         attempts++;
         _generateFindHash.call(this);
       });
-    };
+    }
   });
 };
 

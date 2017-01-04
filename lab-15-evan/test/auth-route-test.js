@@ -24,13 +24,6 @@ const exampleBadRequest = {
   email: 'exampleMember@mailtest.com'
 };
 
-const notValidUser = {
-  username: 'someoneElse',
-  password: '12345678',
-  email: 'exampleMember@mailtest.com'
-};
-
-
 describe('Auth Routes', function() {
   describe('POST: /api/createAccount', function() {
     describe('with a valid body', function() {
