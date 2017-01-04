@@ -71,7 +71,7 @@ describe('album-router-test', function(){
     it('should get an Album', done => {
       request.get(`${url}`)
      .set({Authorization: `Bearer ${this.temptoken}`})
-     .send(testAlbum)
+     .send(this.testAlbum._id)
      .end( (err, res) => {
        if(err) return done(err);
 
