@@ -94,7 +94,7 @@ describe('Student routes', function() {
     });
   });
 
-  describe('GET: /api/student', () => {
+  describe('GET: /api/student/:id', () => {
     beforeEach(done => {
       new User(sampleUser)
       .createHash(sampleUser.password)
@@ -124,6 +124,22 @@ describe('Student routes', function() {
           expect(response.status).to.equal(200);
           expect(response.body).to.be.an('array');
           expect(response.body.length).to.be.at.least(1);
+          done();
+        });
+      });
+    });
+
+    describe('With a valid ID', () => {
+      it('should return a student', done => {
+        request
+        .get(`${url}/api/student/${this.tempStudent._id}`)
+        .set({authorization: `Bearer ${this.tempToken}`})
+        .end((err, response) => {
+          if (err) return done(err);
+          expect(response.status).to.equal(200);
+          expect(response.body.name).to.equal(sampleStudent.name);
+          expect(response.body.age).to.equal(sampleStudent.age);
+          expect(response.body.userID).to.equal(this.tempUser._id.toString());
           done();
         });
       });
