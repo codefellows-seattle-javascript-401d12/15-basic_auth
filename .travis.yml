@@ -15,5 +15,4 @@ env:
 sudo: required
 before_script: npm i
 script:
-  - mongod
-  - mocha
+  - npm run test

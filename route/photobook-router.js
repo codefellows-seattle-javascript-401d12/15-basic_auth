@@ -40,20 +40,10 @@ photobookRouter.delete('/api/photobook/:id', bearerAuth, function(req, res, next
   .catch(err => next(createError(404, err.message)));
 });
 
-photobookRouter.put('/api/photobook/:id', bearerAuth, function(req, res, next) {
+photobookRouter.put('/api/photobook/:id', bearerAuth, jsonParser, function(req, res, next) {
   debug('PUT: /api/photobook/:id');
 
-  Photobook.findById(req.params.id)
- .then( photobook => {
-   if (photobook.userID.toString() === req.user._id.toString()) {
-     Photobook.findByIdAndUpdate(req.params.id, req.body, {new:true})
-     .then( photobook => {
-       res.json( photobook );
-       next();
-     });
-   } else {
-     next(createError(401, 'invalid user'));
-   }
- })
- .catch(err => next(createError(404, err.message)));
+  Photobook.findByIdAndUpdate(req.params.id, req.body, {new: true})
+  .then( photobook => res.json(photobook))
+  .catch(err => next(createError(404, err.message)));
 });
