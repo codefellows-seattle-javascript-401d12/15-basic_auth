@@ -107,6 +107,73 @@ describe('Publisher Routes', function() {
     });
   });
 
+  describe('GET: /api/publisher/:id', () => {
+    before(done => {
+      new User(testUser)
+      .generatePasswordHash(testUser.password)
+      .then(user => user.save())
+      .then(user => {
+        this.tempUser = user;
+        return user.generateToken();
+      })
+      .then(token => {
+        this.tempToken = token;
+        done();
+      })
+      .catch(done);
+    });
 
-  })
+    before(done => {
+      testPublisher.userID = this.tempUser._id.toString();
+      new Publisher(testPublisher).save()
+      .then(publisher => {
+        this.tempPublisher = publisher;
+        done();
+      })
+      .catch(done);
+    });
+
+    after(() => {
+      delete testPublisher.userID;
+    });
+
+    it('should return a publisher', done => {
+      request.get(`${url}/api/publisher/${this.tempPublisher._id}`)
+      .set({
+        Authorization: `Bearer ${this.tempToken}`
+      })
+      .end((err, res) => {
+        if (err) return done(err);
+        let date = new Date(res.body.created).toString();
+        expect(res.status).to.equal(200);
+        expect(res.body.name).to.equal(testPublisher.name);
+        expect(res.body.desc).to.equal(testPublisher.desc);
+        expect(res.body.userID).to.equal(this.tempUser._id.toString());
+        expect(date).to.not.equal('Invalid Date');
+        done();
+      });
+    });
+
+    it('should return a 401 error for unauthorized user', done => {
+      request.get(`${url}/api/publisher/${this.tempPublisher._id}`)
+      .set({})
+      .end(res => {
+        expect(res.status).to.equal(401);
+        done();
+      });
+    });
+
+    it('should return a 404 error for unregistered route', done => {
+      request.get(`${url}/api/unregistered-route/${this.tempPublisher._id}`)
+      .set({
+        Authorization: `Bearer ${this.tempToken}`
+      })
+      .end(res => {
+        expect(res.status).to.equal(404);
+        done();
+      });
+    });
+
+
+  });
 });
