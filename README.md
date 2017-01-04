@@ -52,7 +52,7 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbiI6ImQ4OTM4M2E2ZjM1OGYyMWUyY2UwNGY
 
 After making a POST, you can make a GET request by signing in.
 
-1. Make a GET request, like this example: `http get localhost:8000/api/signin -a user3:password3` since
+1. Make a GET request, like this example: `http GET localhost:8000/api/signin -a user3:password3` since
 upon splitting off the end of the Basic base64 string, we can transform this into a UTF-8 string and grab the username and password as they are now available and split with a : --
 ex: username:password. The `-a` allows for authorization, as explained here: http://blog.mashape.com/postman-httpie-test-apis/.
 
@@ -74,7 +74,7 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbiI6ImQ4OTM4M2E2ZjM1OGYyMWUyY2UwNGY
 ## Photobook
 ### Test the API (POST)
 
-1. Open a new terminal located at the root of this project, grab the token, and type ` http POST localhost:8000/api/photobook Authorization:"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbiI6ImQ4OTM4M2E2ZjM1OGYyMWUyY2UwNGY3N2E5YjNhOGJjMDcwODU3YjkzNGU3NGMwOWJjZTllM2UzN2IyZjdhNDMiLCJpYXQiOjE0ODM1MDUxNjd9.wBf9SkzdSXOaBb1CA1ajk0n2EYNvrmhOrGhX16m-RJg" name="meow" desc="description"`
+1. Open a new terminal located at the root of this project, grab the token, and type `http POST localhost:8000/api/photobook Authorization:"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbiI6ImQ4OTM4M2E2ZjM1OGYyMWUyY2UwNGY3N2E5YjNhOGJjMDcwODU3YjkzNGU3NGMwOWJjZTllM2UzN2IyZjdhNDMiLCJpYXQiOjE0ODM1MDUxNjd9.wBf9SkzdSXOaBb1CA1ajk0n2EYNvrmhOrGhX16m-RJg" name="meow" desc="description"`
 2. You should get a JSON response with a `200` status code and a response, like this example:
 
 ``` javascript
