@@ -71,7 +71,7 @@ The successful response should return a jSON object with updated values along wi
 
 ###DELETE Request
 
->Create Gallery DELETE Request
+>Gallery DELETE Request
 
 Send a gallery `DELETE` request by using the command
 `http DELETE localhost:8000/api/gallery/<galleryID> Authorization:'Bearer <token>`.
