@@ -12,10 +12,10 @@ Now, type the following in your command line:
 
 1. `git clone https://github.com/brittdawn/15-basic_auth.git`
 2. `cd 15-basic_auth`
-3. `npm i`
+3. `npm install`
 4. `brew install httpie`
 5. Open another terminal and type: `mongod`
-6. Open yet another terminal and type: `node server.js` or `npm start`
+6. Open yet another terminal and type: `npm start`
 7. Add a `.env` file to the root directory of this lab and add the following:
 
 ```
@@ -44,7 +44,7 @@ Date: Tue, 03 Jan 2017 19:03:41 GMT
 ETag: W/"cd-vJLWlT+ADjDgdcMElCLuPA"
 X-Powered-By: Express
 
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbiI6ImZlZmYzNjY2Y2I0MTMxMTYwZmY2ZGYxYmM3ZmIyMWFhNjc5NzFlMDZkMzk2MGYwNzdkNjRmYjI1ZTNhYzA5NzEiLCJpYXQiOjE0ODM0NzAyMjF9.Ug3fs21ijn_1cEX2pZi3N4DQJcyEPugg6YyFlunzw-k
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbiI6ImQ4OTM4M2E2ZjM1OGYyMWUyY2UwNGY3N2E5YjNhOGJjMDcwODU3YjkzNGU3NGMwOWJjZTllM2UzN2IyZjdhNDMiLCJpYXQiOjE0ODM1MDUxNjd9.wBf9SkzdSXOaBb1CA1ajk0n2EYNvrmhOrGhX16m-RJg
 ```
 
 ## SignIn
@@ -68,5 +68,119 @@ Date: Tue, 03 Jan 2017 19:40:46 GMT
 ETag: W/"cd-OBWf8LruAeFgYeDnItRDkw"
 X-Powered-By: Express
 
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbiI6IjRjNTRiZDlhYTMwMTM1OGJlMzNkZDUyZDY2YjE5ODkxOTEyNGQ5MTkzOGNhMDNiMzIzOTVlMWU0Njg1ZjM0MTEiLCJpYXQiOjE0ODM0NzI0NDZ9.mgo_VMcTfIaEbSoWUIlXjLswHLL5ZULW-e2egBtYPhU
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbiI6ImQ4OTM4M2E2ZjM1OGYyMWUyY2UwNGY3N2E5YjNhOGJjMDcwODU3YjkzNGU3NGMwOWJjZTllM2UzN2IyZjdhNDMiLCJpYXQiOjE0ODM1MDUxNjd9.wBf9SkzdSXOaBb1CA1ajk0n2EYNvrmhOrGhX16m-RJg
+```
+
+## Photobook
+### Test the API (POST)
+
+1. Open a new terminal located at the root of this project, grab the token, and type ` http POST localhost:8000/api/photobook Authorization:"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbiI6ImQ4OTM4M2E2ZjM1OGYyMWUyY2UwNGY3N2E5YjNhOGJjMDcwODU3YjkzNGU3NGMwOWJjZTllM2UzN2IyZjdhNDMiLCJpYXQiOjE0ODM1MDUxNjd9.wBf9SkzdSXOaBb1CA1ajk0n2EYNvrmhOrGhX16m-RJg" name="meow" desc="description"`
+2. You should get a JSON response with a `200` status code and a response, like this example:
+
+``` javascript
+HTTP/1.1 200 OK
+Access-Control-Allow-Origin: *
+Connection: keep-alive
+Content-Length: 150
+Content-Type: application/json; charset=utf-8
+Date: Wed, 04 Jan 2017 04:51:40 GMT
+ETag: W/"96-fowLtPX+YcEqyy4h70ADRA"
+X-Powered-By: Express
+
+{
+    "__v": 0,
+    "_id": "586c7f5c7b26425f3c8f3dd0",
+    "created": "2017-01-04T04:51:40.839Z",
+    "desc": "description",
+    "name": "meow",
+    "userID": "586c7e0f7b26425f3c8f3dc7"
+}
+```
+
+### Test the API (GET)
+
+After making a POST, you can make a GET request by grabbing the `_id` from the POST request and adding it as a param to the url. Don't forget to grab your token too.
+
+1. Make a GET request, like this example: `http localhost:8000/api/photobook/586c7f5c7b26425f3c8f3dd0 Authorization:"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbiI6IjhjZWE1NjYzNzUxNjllOTkwZDhjNDk1ZWM4NzI0NGM0YTEzZDYzMWIzNjQ0MzRjMzRmMGM2NDEyZmYzMzg2MGMiLCJpYXQiOjE0ODM1MDg5NDN9.IFuAMB0p_TW4W1AUSgbAAcjZF8l-L4fF6msHGhEe_Po"`.
+
+2. You should get a JSON response with a `200` status code, like this example:
+
+``` javascript
+HTTP/1.1 200 OK
+Access-Control-Allow-Origin: *
+Connection: keep-alive
+Content-Length: 145
+Content-Type: application/json; charset=utf-8
+Date: Wed, 04 Jan 2017 05:52:17 GMT
+ETag: W/"91-KaSGTNMILzMoRXFQyGu19Q"
+X-Powered-By: Express
+
+{
+    "__v": 0,
+    "_id": "586c7f5c7b26425f3c8f3dd0",
+    "created": "2017-01-04T05:49:55.717Z",
+    "desc": "description",
+    "name": "meow",
+    "userID": "586c7e0f7b26425f3c8f3dc7"
+}
+```
+
+### Test the API (PUT)
+
+After making a POST, you can make a PUT request by grabbing the `_id` from the POST or GET request and adding it as a param to the url. Don't forget to grab your token too.
+
+1. Make a PUT request, like this example: `http PUT localhost:8000/api/photobook/586c7f5c7b26425f3c8f3dd0 Authorization:"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbiI6IjhjZWE1NjYzNzUxNjllOTkwZDhjNDk1ZWM4NzI0NGM0YTEzZDYzMWIzNjQ0MzRjMzRmMGM2NDEyZmYzMzg2MGMiLCJpYXQiOjE0ODM1MDg5NDN9.IFuAMB0p_TW4W1AUSgbAAcjZF8l-L4fF6msHGhEe_Po" name="newname" desc="newdescription"`.
+
+2. You should get a JSON response with a `200` status code, like this example:
+
+``` javascript
+HTTP/1.1 200 OK
+Access-Control-Allow-Origin: *
+Connection: keep-alive
+Content-Length: 145
+Content-Type: application/json; charset=utf-8
+Date: Wed, 04 Jan 2017 05:52:17 GMT
+ETag: W/"91-KaSGTNMILzMoRXFQyGu19Q"
+X-Powered-By: Express
+
+{
+    "__v": 0,
+    "_id": "586c7f5c7b26425f3c8f3dd0",
+    "created": "2017-01-04T05:49:55.717Z",
+    "desc": "newdescription",
+    "name": "newname",
+    "userID": "586c7e0f7b26425f3c8f3dc7"
+}
+```
+
+### Test the API (DELETE)
+
+After making a POST, you can make a DELETE request by grabbing the `_id` from the POST or GET request and adding it as a param to the url. Don't forget to grab your token too.
+
+1. Make a DELETE request, like this example: `http DELETE localhost:8000/api/photobook/586c7f5c7b26425f3c8f3dd0 Authorization:"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbiI6IjhjZWE1NjYzNzUxNjllOTkwZDhjNDk1ZWM4NzI0NGM0YTEzZDYzMWIzNjQ0MzRjMzRmMGM2NDEyZmYzMzg2MGMiLCJpYXQiOjE0ODM1MDg5NDN9.IFuAMB0p_TW4W1AUSgbAAcjZF8l-L4fF6msHGhEe_Po"`.
+
+2. You should get a JSON response with a `204` status code, like this example:
+
+``` javascript
+HTTP/1.1 204 No Content
+Access-Control-Allow-Origin: *
+Connection: keep-alive
+Date: Wed, 04 Jan 2017 06:09:56 GMT
+ETag: W/"11-3pphLxOhDYpB51tvzh8yow"
+X-Powered-By: Express
+```
+
+3. If you make another GET request to this particular id param, you will get a `404` status code, like this example:
+
+``` javascript
+HTTP/1.1 404 Not Found
+Access-Control-Allow-Origin: *
+Connection: keep-alive
+Content-Length: 13
+Content-Type: text/html; charset=utf-8
+Date: Wed, 04 Jan 2017 06:10:00 GMT
+ETag: W/"d-8ImJlDOBcq5A9PkBq5sbQw"
+X-Powered-By: Express
+
+NotFoundError
 ```
