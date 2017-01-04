@@ -22,7 +22,7 @@ const testUser = {
 };
 const testAlbum ={
   name: 'testName',
-  desc: 'destDesc'
+  desc: 'testDesc'
 };
 
 
@@ -39,7 +39,6 @@ describe('album-router-test', function(){
     })
    .catch(done);
   });
-
   afterEach( done =>{
     User.remove({})
     .then( () => done())
@@ -53,13 +52,32 @@ describe('album-router-test', function(){
 
   describe('POST ', () => {
     it('should post an Album', done => {
-      request(`${url}`)
+      request.post(`${url}`)
      .set({Authorization: `Bearer ${this.temptoken}`})
      .send(testAlbum)
      .end( (err, res) => {
        if(err) return done(err);
 
        expect(res.status).to.equal(200);
+       expect(res.body.name).to.equal('testName');
+       expect(res.body.desc).to.equal('testDesc');
+       User.remove({});
+     });
+      done();
+    });
+  });
+
+  describe('GET ', () => {
+    it('should get an Album', done => {
+      request.get(`${url}`)
+     .set({Authorization: `Bearer ${this.temptoken}`})
+     .send(testAlbum)
+     .end( (err, res) => {
+       if(err) return done(err);
+
+       expect(res.status).to.equal(200);
+       expect(res.body.name).to.equal('testName');
+       expect(res.body.desc).to.equal('testDesc');
        User.remove({});
      });
       done();
