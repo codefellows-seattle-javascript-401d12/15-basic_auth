@@ -44,3 +44,16 @@ publisherRouter.put('/api/publisher/:id', bearerAuth, jsonParser, function(req, 
   })
   .catch(next);
 });
+
+publisherRouter.delete('/api/publisher/:id', bearerAuth, function(req, res, next) {
+  debug('DELETE: /api/publisher/:id');
+
+  Publisher.findByIdAndRemove(req.params.id)
+  .then(publisher => {
+    if (publisher.userID.toString() !== req.user._id.toString()) {
+      return next(createError(401, 'invalid user'));
+    }
+    res.status(204).send();
+  })
+  .catch(next);
+});
