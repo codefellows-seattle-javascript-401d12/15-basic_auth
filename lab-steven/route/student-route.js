@@ -11,6 +11,11 @@ const studentRouter = module.exports = Router();
 studentRouter.post('/api/student', bearAuth, parseJSON, function(request, response, next) {
   debug('POST: /api/student');
 
+  if (Object.keys(request.body).length < 1) {
+    response.status(400).send('No updated content passed in');
+    return;
+  }
+
   request.body.userID = request.user._id;
   new Student(request.body).save()
   .then(student => response.json(student))

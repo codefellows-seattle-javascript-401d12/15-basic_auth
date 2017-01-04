@@ -78,5 +78,19 @@ describe('Student routes', function() {
         });
       });
     });
+
+    describe('With no body', () => {
+      it('should return a 400 bad request error', done => {
+        request
+        .post(`${url}/api/student`)
+        .set({authorization: `Bearer ${this.tempToken}`})
+        .end((err, response) => {
+          expect(err).to.be.an('error');
+          expect(response.status).to.equal(400);
+          expect(response.body.name).to.equal(undefined);
+          done();
+        });
+      });
+    });
   });
 });
