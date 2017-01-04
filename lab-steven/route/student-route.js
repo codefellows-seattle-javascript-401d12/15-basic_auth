@@ -35,3 +35,19 @@ studentRouter.get('/api/student/:id', bearAuth, function(request, response, next
   })
   .catch(next);
 });
+
+studentRouter.put('/api/student/:id', bearAuth, parseJSON, function(request, response, next) {
+  debug('PUT: /api/student/:id');
+
+  if (Object.keys(request.body).length < 1) {
+    response.status(400).send('No updated content passed in');
+    return;
+  }
+
+  Student.findByIdAndUpdate(request.params.id, request.body, {new: true})
+  .then(student => {
+    if (student.userID.toString() !== request.user._id.toString()) return next(createError(401, 'Wrong user'));
+    response.json(student);
+  })
+  .catch(next);
+});
