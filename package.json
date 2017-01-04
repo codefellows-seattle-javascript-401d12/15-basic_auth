@@ -1,7 +1,7 @@
 {
-  "name": "15-basic_auth",
+  "name": "Basic and bearer auth.",
   "version": "1.0.0",
-  "description": "Basic auth lab.",
+  "description": "Basic and bearer auth lab.",
   "main": "server.js",
   "directories": {
     "test": "test"
