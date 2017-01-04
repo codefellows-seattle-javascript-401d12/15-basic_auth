@@ -237,5 +237,20 @@ describe('Student routes', function() {
         });
       });
     });
+
+    describe('With the wrong ID', () => {
+      it('should return a 404 not found error', done => {
+        request
+        .put(`${url}/api/student/69`)
+        .set({authorization: `Bearer ${this.tempToken}`})
+        .send({name: 'New name', age: 10})
+        .end((err, response) => {
+          expect(err).to.be.an('error');
+          expect(response.status).to.equal(404);
+          expect(response.body.name).to.equal(undefined);
+          done();
+        });
+      });
+    });
   });
 });
