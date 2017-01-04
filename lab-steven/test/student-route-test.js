@@ -289,15 +289,6 @@ describe('Student routes', function() {
     });
 
     describe('With an invalid ID', () => {
-      after(done => {
-        Promise.all([
-          User.remove({}),
-          Student.remove({})
-        ])
-        .then(() => done())
-        .catch(done);
-      });
-
       it('should return a 404 not found error', done => {
         request
         .delete(`${url}/api/student/69`)
@@ -305,6 +296,18 @@ describe('Student routes', function() {
         .end((err, response) => {
           expect(err).to.be.an('error');
           expect(response.status).to.equal(404);
+          done();
+        });
+      });
+    });
+
+    describe('With no token', () => {
+      it('should return a 401 unauthorized error', done => {
+        request
+        .delete(`${url}/api/student/${this.tempStudent._id}`)
+        .end((err, response) => {
+          expect(err).to.be.an('error');
+          expect(response.status).to.equal(401);
           done();
         });
       });
