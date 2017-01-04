@@ -254,3 +254,38 @@ describe('Student routes', function() {
     });
   });
 });
+
+describe('Student routes(delete)', function() {
+  beforeEach(done => {
+    new User(sampleUser)
+    .createHash(sampleUser.password)
+    .then(user => {
+      this.tempUser = user;
+      return user.createToken();
+    })
+    .then(token => {
+      this.tempToken = token;
+      sampleStudent.userID = this.tempUser._id;
+      return new Student(sampleStudent).save();
+    })
+    .then(student => {
+      this.tempStudent = student;
+      done();
+    })
+    .catch(done);
+  });
+
+  describe('With a valid ID and token', () => {
+    it('should return a 204 status', done => {
+      request
+      .delete(`${url}/api/student/${this.tempStudent._id}`)
+      .set({authorization: `Bearer ${this.tempToken}`})
+      .end((err, response) => {
+        if (err) return done(err);
+        expect(response.status).to.equal(204);
+        expect(response.body.name).to.equal(undefined);
+        done();
+      });
+    });
+  });
+});
