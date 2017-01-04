@@ -1,5 +1,8 @@
+
+
+
 {
-  "name": "15-basic_auth",
+  "name": "15-bearer_auth",
   "version": "1.0.0",
   "description": "msg: invalid signature\r name: JsonWebTokenError",
   "main": "gulpfile.js",

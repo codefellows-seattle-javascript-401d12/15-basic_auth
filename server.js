@@ -9,6 +9,7 @@ const Promise = require('bluebird');
 
 mongoose.Promise = Promise;
 
+const bearerRouter = require('./route/album-router.js');
 const authRouter = require('./route/auth-router.js');
 const errors = require('./lib/error-middleware.js');
 
@@ -21,6 +22,7 @@ mongoose.connect(process.env.MONGODB_URI);
 app.use(cors());
 app.use(morgan('dev'));
 app.use(authRouter);
+app.use(bearerRouter);
 app.use(errors);
 
 app.listen(PORT, () => {
