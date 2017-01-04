@@ -156,7 +156,7 @@ describe('Gallery Routes', function() {
     });
   });
   describe('PUT: /api/gallery/:id', () => {
-    before( done => {
+    beforeEach( done => {
       new User(exampleUser)
       .generatePasswordHash(exampleUser.password)
       .then( user => user.save())
@@ -170,7 +170,7 @@ describe('Gallery Routes', function() {
       })
       .catch(done);
     });
-    before( done => {
+    beforeEach( done => {
       exampleGallery.userID = this.tempUser._id.toString();
       new Gallery(exampleGallery).save()
       .then( gallery => {
@@ -207,15 +207,27 @@ describe('Gallery Routes', function() {
         done();
       });
     });
-    it.only('should return 400', done => {
+    it('should return 400', done => {
       request.put(`${url}/api/gallery/${this.tempGallery._id}`)
-      .send({})
+      .send({blah: 'blah'})
       .set({
         Authorization: `Bearer ${this.tempToken}`
       })
       .end((err, res) => {
         expect(err).to.be.an('error');
         expect(res.status).to.equal(400);
+        done();
+      });
+    });
+    it('should return 404', done => {
+      request.put(`${url}/api/gallery/586d2d44e61cdb0a8bdd1c69`)
+      .send(exampleGallery)
+      .set({
+        Authorization: `Bearer ${this.tempToken}`
+      })
+      .end((err, res) => {
+        expect(err).to.be.an('error');
+        expect(res.status).to.equal(404);
         done();
       });
     });
