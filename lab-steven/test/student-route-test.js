@@ -253,51 +253,60 @@ describe('Student routes', function() {
       });
     });
   });
-});
 
-describe('Student routes(delete)', function() {
-  beforeEach(done => {
-    new User(sampleUser)
-    .createHash(sampleUser.password)
-    .then(user => {
-      this.tempUser = user;
-      return user.createToken();
-    })
-    .then(token => {
-      this.tempToken = token;
-      sampleStudent.userID = this.tempUser._id;
-      return new Student(sampleStudent).save();
-    })
-    .then(student => {
-      this.tempStudent = student;
-      done();
-    })
-    .catch(done);
-  });
-
-  describe('With a valid ID and token', () => {
-    it('should return a 204 status', done => {
-      request
-      .delete(`${url}/api/student/${this.tempStudent._id}`)
-      .set({authorization: `Bearer ${this.tempToken}`})
-      .end((err, response) => {
-        if (err) return done(err);
-        expect(response.status).to.equal(204);
-        expect(response.body.name).to.equal(undefined);
+  describe('DELETE: /api/student/:id', () => {
+    beforeEach(done => {
+      new User(sampleUser)
+      .createHash(sampleUser.password)
+      .then(user => {
+        this.tempUser = user;
+        return user.createToken();
+      })
+      .then(token => {
+        this.tempToken = token;
+        sampleStudent.userID = this.tempUser._id;
+        return new Student(sampleStudent).save();
+      })
+      .then(student => {
+        this.tempStudent = student;
         done();
+      })
+      .catch(done);
+    });
+
+    describe('With a valid ID and token', () => {
+      it('should return a 204 status', done => {
+        request
+        .delete(`${url}/api/student/${this.tempStudent._id}`)
+        .set({authorization: `Bearer ${this.tempToken}`})
+        .end((err, response) => {
+          if (err) return done(err);
+          expect(response.status).to.equal(204);
+          expect(response.body.name).to.equal(undefined);
+          done();
+        });
       });
     });
-  });
 
-  describe('With an invalid ID', () => {
-    it('should return a 404 not found error', done => {
-      request
-      .delete(`${url}/api/student/69`)
-      .set({authorization: `Bearer ${this.tempToken}`})
-      .end((err, response) => {
-        expect(err).to.be.an('error');
-        expect(response.status).to.equal(404);
-        done();
+    describe('With an invalid ID', () => {
+      after(done => {
+        Promise.all([
+          User.remove({}),
+          Student.remove({})
+        ])
+        .then(() => done())
+        .catch(done);
+      });
+
+      it('should return a 404 not found error', done => {
+        request
+        .delete(`${url}/api/student/69`)
+        .set({authorization: `Bearer ${this.tempToken}`})
+        .end((err, response) => {
+          expect(err).to.be.an('error');
+          expect(response.status).to.equal(404);
+          done();
+        });
       });
     });
   });

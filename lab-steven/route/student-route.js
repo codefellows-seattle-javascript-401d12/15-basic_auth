@@ -62,5 +62,5 @@ studentRouter.delete('/api/student/:id', bearAuth, function(request, response, n
 
   Student.findByIdAndRemove(request.params.id)
   .then(() => response.status(204).send('Student deleted.'))
-  .catch(next);
+  .catch(err => next(createError(404, err.message)));
 });
