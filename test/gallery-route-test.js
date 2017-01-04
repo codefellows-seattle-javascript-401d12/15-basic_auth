@@ -58,10 +58,22 @@ describe('Gallery Routes', function() {
       .end((err, res) => {
         if (err) return done(err);
         let date = new Date(res.body.created).toString();
+        expect(res.status).to.equal(200);
         expect(res.body.name).to.equal(exampleGallery.name);
         expect(res.body.desc).to.equal(exampleGallery.desc);
         expect(res.body.userID).to.equal(this.tempUser._id.toString());
         expect(date).to.not.equal('Invalid Date');
+        done();
+      });
+    });
+    it('should return a 401 unauthorized', done => {
+      request.post(`${url}/api/gallery`)
+      .send(exampleGallery)
+      .end((err, res) => {
+        let date = new Date(res.body.created).toString();
+        expect(err).to.be.an('error');
+        expect(res.status).to.equal(401);
+        expect(date).to.equal('Invalid Date');
         done();
       });
     });
