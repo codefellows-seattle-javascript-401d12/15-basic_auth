@@ -31,3 +31,19 @@ albumRouter.get('/api/album/:id', bearerAuth, function(req, res, next) {
   })
   .catch(next);
 });
+
+albumRouter.put('/api/album/:id', bearerAuth, jsonParser, (req, res, next) => {
+  debug('PUT: /api/album/:id');
+
+  Album.findByIdAndUpdate(req.params.id, req.body, {new: true})
+  .then(album => res.json(album)) // need to return here?
+  .catch( err => next(createError(404, err.message)));
+});
+
+albumRouter.delete('/api/album/:id', bearerAuth, function(req, res, next) {
+  debug('DELETE: /api/album/:id');
+
+  Album.findByIdAndRemove(req.params.id)
+  .then( () => res.status(204).send())
+  .catch( err => next(createError(404, err.message)));
+});

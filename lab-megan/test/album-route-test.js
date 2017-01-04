@@ -33,16 +33,17 @@ describe('Album Routes', function() {
     .catch(done);
   });
 
+  // ---------------------
+  // POST tests /api/album
+  // ---------------------
+
   describe('POST: /api/album', () => {
     before( done => {
-      // console.log('::: reached inside album POST before test');
       new User(exampleUser)
       .generatePasswordHash(exampleUser.password)
       .then( user => user.save())
       .then( user => {
         this.tempUser = user;
-        // console.log('::: gallery POST test user is', user);
-        // console.log('::: album POST test user is:', user);
         return user.generateToken();
       })
       .then( token => {
@@ -52,7 +53,7 @@ describe('Album Routes', function() {
       .catch(done);
     });
 
-    it('SHOULD RETURN AN ALBUM', done => {
+    it('should return an album', done => {
       request.post(`${url}/api/album`)
       .send(exampleAlbum)
       .set({
@@ -70,7 +71,12 @@ describe('Album Routes', function() {
     });
   });
 
+  // ------------------------
+  // GET tests /api/album/:id
+  // ------------------------
+
   describe('GET: /api/album/:id', () => {
+    
     before( done => {
       new User(exampleUser)
       .generatePasswordHash(exampleUser.password)
@@ -100,7 +106,7 @@ describe('Album Routes', function() {
       delete exampleAlbum.userID;
     });
 
-    it('SHOULD RETURN AN ALBUM', done => {
+    it('should return an album', done => {
       request.get(`${url}/api/album/${this.tempAlbum._id}`)
       .set({
         Authorization: `Bearer ${this.tempToken}`
@@ -115,5 +121,109 @@ describe('Album Routes', function() {
         done();
       });
     });
+
   });
+
+  // ------------------------
+  // PUT tests /api/album/:id
+  // ------------------------
+
+  describe('PUT: /api/album/:id', () => {
+
+    before( done => {
+      new User(exampleUser)
+      .generatePasswordHash(exampleUser.password)
+      .then( user => user.save())
+      .then( user => {
+        this.tempUser = user;
+        return user.generateToken();
+      })
+      .then( token => {
+        this.tempToken = token;
+        done();
+      })
+      .catch(done);
+    });
+
+    before( done => {
+      exampleAlbum.userID = this.tempUser._id.toString();
+      new Album(exampleAlbum).save()
+      .then( album => {
+        this.tempAlbum = album;
+        done();
+      })
+      .catch(done);
+    });
+
+    after( () => {
+      delete exampleAlbum.userID;
+    });
+
+    it('should update an album', done => {
+      var updatedAlbum = { name: 'updated album name' };
+      request.put(`${url}/api/album/${this.tempAlbum._id}`)
+      .set({
+        Authorization: `Bearer ${this.tempToken}`
+      })
+      .send(updatedAlbum)
+      .end((err, res) => {
+        if (err) return done(err);
+        expect(res.body.name).to.equal(updatedAlbum.name);
+        expect(res.body._id).to.equal(this.tempAlbum._id.toString());
+        done();
+      });
+    });
+
+  });
+
+  // ---------------------------
+  // DELETE tests /api/album/:id
+  // ---------------------------
+
+  describe('DELETE: /api/album/:id', () => {
+
+    before( done => {
+      new User(exampleUser)
+      .generatePasswordHash(exampleUser.password)
+      .then( user => user.save())
+      .then( user => {
+        this.tempUser = user;
+        return user.generateToken();
+      })
+      .then( token => {
+        this.tempToken = token;
+        done();
+      })
+      .catch(done);
+    });
+
+    before( done => {
+      exampleAlbum.userID = this.tempUser._id.toString();
+      new Album(exampleAlbum).save()
+      .then( album => {
+        this.tempAlbum = album;
+        done();
+      })
+      .catch(done);
+    });
+
+    after( () => {
+      delete exampleAlbum.userID;
+    });
+
+    it('should delete an album', done => {
+      request.delete(`${url}/api/album/${this.tempAlbum._id}`)
+      .set({
+        Authorization: `Bearer ${this.tempToken}`
+      })
+      .end((err, res) => {
+        if (err) return done(err);
+        expect(res.status).to.equal(204);
+        expect(res.body).to.be.empty;
+        done();
+      });
+    });
+
+  });
+
 });
