@@ -31,3 +31,16 @@ publisherRouter.get('/api/publisher/:id', bearerAuth, function(req, res, next) {
   })
   .catch(next);
 });
+
+publisherRouter.put('/api/publisher/:id', bearerAuth, jsonParser, function(req, res, next) {
+  debug('PUT: /api/publisher/:id');
+
+  Publisher.findByIdAndUpdate(req.params, req.body, {new: true})
+  .then(publisher => {
+    if (publisher.userID.toString() !== req.user._id.toString()) {
+      return next(createError(401, 'invalid user'));
+    }
+    res.json(publisher);
+  })
+  .catch(next);
+});
