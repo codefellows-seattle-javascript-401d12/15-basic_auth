@@ -49,7 +49,7 @@ describe('Photobook Routes', function() {
       .catch(done);
     });
 
-    it('should return a photobook', done => {
+    it('should return a photobook with a 200 status', done => {
       request.post(`${url}/api/photobook`)
       .send(examplePhotobook)
       .set({
@@ -84,7 +84,7 @@ describe('Photobook Routes', function() {
       .catch(done);
     });
 
-    it('should return a 401 status code if no token provided', done => {
+    it('should return a 401 status code if no token was provided', done => {
       request.post(`${url}/api/photobook`)
       .send(examplePhotobook)
       .set({})
@@ -112,7 +112,7 @@ describe('Photobook Routes', function() {
       .catch(done);
     });
 
-    it('should return a 400 status code for invalid/no body', done => {
+    it('should return a 400 status code for no body', done => {
       request.post(`${url}/api/photobook`)
       .send({})
       .set({
@@ -126,7 +126,21 @@ describe('Photobook Routes', function() {
       });
     });
 
-    it('should return a 404 not found status', done => {
+    it('should return a 400 status code for an invalid body', done => {
+      request.post(`${url}/api/photobook`)
+      .send('beepbeep')
+      .set({
+        Authorization: `Bearer ${this.tempToken}`,
+      })
+      .set('Content-type', 'application/json')
+      .end((err, res) => {
+        expect(res.status).to.equal(400);
+        expect(err).to.be.an('error');
+        done();
+      });
+    });
+
+    it('should return a 404 not found status for unregistered routes', done => {
       request.post(`${url}/api/nonexistent`)
       .set({
         Authorization: `Bearer ${this.tempToken}`
@@ -169,7 +183,7 @@ describe('Photobook Routes', function() {
       delete examplePhotobook.userID;
     });
 
-    it('should return a 200 status', done => {
+    it('should return a 200 status for a PUT request with a valid body', done => {
       let newPhotobook = {
         name: 'new name',
         desc:'new description'
@@ -191,7 +205,7 @@ describe('Photobook Routes', function() {
       });
     });
 
-    describe('with no body or invalid body', () => {
+    describe('with an invalid body', () => {
 
       it('should return a bad request status code of 400', done => {
         request.put(`${url}/api/photobook/${this.tempPhotobook._id}`)
@@ -272,7 +286,7 @@ describe('Photobook Routes', function() {
       delete examplePhotobook.userID;
     });
 
-    it('should return a photobook', done => {
+    it('should return a photobook with a 200 status code', done => {
       request.get(`${url}/api/photobook/${this.tempPhotobook._id}`)
       .set({
         Authorization: `Bearer ${this.tempToken}`
