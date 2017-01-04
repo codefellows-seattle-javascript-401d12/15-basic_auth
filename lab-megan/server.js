@@ -9,6 +9,7 @@ const Promise = require('bluebird');
 const debug = require('debug')('cfgram:server');
 
 const authRouter = require('./route/auth-router.js');
+const albumRouter = require('./route/album-router.js');
 const errors = require('./lib/error-middleware.js');
 
 dotenv.load();
@@ -22,6 +23,7 @@ app.use(cors());
 app.use(morgan('dev'));
 
 app.use(authRouter);
+app.use(albumRouter);
 app.use(errors);
 
 app.listen(PORT, () => {
