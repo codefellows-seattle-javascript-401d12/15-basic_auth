@@ -19,7 +19,7 @@ module.exports = function(req, res, next) {
     return next(createError(401, 'token required'));
   }
 
-  jwt.verify(token, process.env.APP_Secret, (err, decoded) => {
+  jwt.verify(token, process.env.APP_SECRET, (err, decoded) => {
     if (err) return next(err);
 
     User.findOne({ findHash: decoded.token })

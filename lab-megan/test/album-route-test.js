@@ -13,7 +13,7 @@ const url = `http://localhost:${process.env.PORT}`;
 const exampleUser = {
   username: 'exampleuser',
   password: '1234',
-  description: 'exampleuser@test.com'
+  email: 'exampleuser@test.com'
 };
 
 const exampleAlbum = {
@@ -35,11 +35,14 @@ describe('Album Routes', function() {
 
   describe('POST: /api/album', () => {
     before( done => {
+      // console.log('::: reached inside album POST before test');
       new User(exampleUser)
       .generatePasswordHash(exampleUser.password)
       .then( user => user.save())
       .then( user => {
         this.tempUser = user;
+        // console.log('::: gallery POST test user is', user);
+        // console.log('::: album POST test user is:', user);
         return user.generateToken();
       })
       .then( token => {
