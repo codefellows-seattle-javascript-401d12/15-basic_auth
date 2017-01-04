@@ -2,7 +2,6 @@
 
 const express = require('express');
 const mongoose = require('mongoose');
-const morgan = require('morgan');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const errors = require('./lib/error-middleware.js');
@@ -14,7 +13,6 @@ const app = express();
 dotenv.load();
 
 app.use(cors());
-app.use(morgan('dev'));
 app.use(authRoute);
 app.use(studentRoute);
 app.use(errors);
