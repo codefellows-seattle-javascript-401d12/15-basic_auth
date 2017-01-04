@@ -32,7 +32,6 @@ describe('Auth Routes', function() {
         .send(testUser)
         .end((err, res) => {
           if (err) return done(err);
-          console.log('\ntoken:', res.text, '\n');
           expect(res.status).to.equal(200);
           expect(res.text).to.be.a('string');
           done();
@@ -87,7 +86,6 @@ describe('Auth Routes', function() {
         .auth('testuser', '55555')
         .end((err, res) => {
           if (err) return done(err);
-          console.log('\ntoken:', res.text);
           expect(res.status).to.equal(200);
           done();
         });
