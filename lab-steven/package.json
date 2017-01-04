@@ -1,0 +1,37 @@
+{
+  "name": "lab-steven",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "DEBUG='photogram*' mocha",
+    "start": "DEBUG='photogram*' node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^1.0.2",
+    "bluebird": "^3.4.7",
+    "body-parser": "^1.15.2",
+    "cors": "^2.8.1",
+    "crypto": "0.0.3",
+    "debug": "^2.6.0",
+    "dotenv": "^2.0.0",
+    "express": "^4.14.0",
+    "http-errors": "^1.5.1",
+    "jsonwebtoken": "^7.2.1",
+    "mongoose": "^4.7.5",
+    "morgan": "^1.7.0"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "gulp": "^3.9.1",
+    "gulp-mocha": "^3.0.1",
+    "mocha": "^3.2.0",
+    "superagent": "^3.3.1"
+  }
+}
