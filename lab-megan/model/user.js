@@ -19,14 +19,11 @@ const userSchema = Schema({
 
 userSchema.methods.generatePasswordHash = function(password) {
   debug('generatePasswordHash');
-  // console.log('::: inside user generatePasswordHash');
 
   return new Promise((resolve, reject) => {
     bcrypt.hash(password, 10, (err, hash) => {
       if (err) return reject(err);
-      // console.log('::: past generatePasswordHash error');
       this.password = hash;
-      // console.log('::: hash is:', hash);
       resolve(this);
     });
   });

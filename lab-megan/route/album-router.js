@@ -12,7 +12,6 @@ const albumRouter = module.exports = Router();
 
 albumRouter.post('/api/album', bearerAuth, jsonParser, function(req, res, next) {
   debug('POST: /api/album');
-
   req.body.userID = req.user._id;
   new Album(req.body).save()
   .then( album => res.json(album))
@@ -29,7 +28,7 @@ albumRouter.get('/api/album/:id', bearerAuth, function(req, res, next) {
     }
     res.json(album);
   })
-  .catch(next);
+  .catch( err => next(createError(404, err.message)));
 });
 
 albumRouter.put('/api/album/:id', bearerAuth, jsonParser, (req, res, next) => {

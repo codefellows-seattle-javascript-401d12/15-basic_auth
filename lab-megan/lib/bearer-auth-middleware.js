@@ -25,6 +25,7 @@ module.exports = function(req, res, next) {
     User.findOne({ findHash: decoded.token })
     .then( user => {
       req.user = user;
+
       next();
     })
     .catch(err => {
