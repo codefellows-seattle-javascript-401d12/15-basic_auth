@@ -13,6 +13,11 @@ const publisherRouter = module.exports = Router();
 publisherRouter.post('/api/publisher', bearerAuth, jsonParser, function(req, res, next) {
   debug('POST: /api/publisher');
 
+  if (!req.body.name || !req.body.desc) {
+    res.status(400).send();
+    return;
+  }
+
   req.body.userID = req.user._id;
   new Publisher(req.body).save()
   .then(publisher => res.json(publisher))
