@@ -42,9 +42,21 @@ describe('Auth Routes', function() {
       describe('no request body, or invalid body', function() {
         it('should throw a 400 error', done => {
           request.post(`${url}/api/signup`)
-          .send({username: 'fake user'})
+          .send({username: 'username', password: 'password'})
           .end((err, res) => {
             expect(res.status).to.equal(400);
+            expect(err).to.be.an('error');
+            done();
+          });
+        });
+      });
+
+      describe('with a bad route', () => {
+        it('should return a 404 error', done => {
+          request.post(`${url}/api/`)
+          .send(exampleUser)
+          .end(res => {
+            expect(res.status).to.equal(404);
             done();
           });
         });
@@ -52,42 +64,52 @@ describe('Auth Routes', function() {
     });
   });
   describe('GET: /api/signin', function() {
-    describe('with a valid body', function() {
-      before(done => {
-        let user = new User(exampleUser);
-        user.generatePasswordHash(exampleUser.password)
-        .then( user => user.save())
-        .then( user => {
-          this.tempUser = user;
-          done();
-        })
-        .catch(done);
-      });
-      after( done => {
-        User.remove({})
-        .then( () => done())
-        .catch(done);
-      });
+    before(done => {
+      let user = new User(exampleUser);
+      user.generatePasswordHash(exampleUser.password)
+      .then( user => user.save())
+      .then( user => {
+        this.tempUser = user;
+        done();
+      })
+      .catch(done);
+    });
+    after( done => {
+      User.remove({})
+      .then( () => done())
+      .catch(done);
+    });
+
+    describe('with a valid body', () => {
       it('should return a token', done => {
         request.get(`${url}/api/signin`)
-        .auth('exampleuser', '1234')
+        .auth('exampleUser', '1234')
         .end((err, res) => {
           if (err) return done(err);
-
           expect(res.status).to.equal(200);
           done();
         });
       });
     });
-  });
-  describe('with authentication failure', function() {
-    it('should return a 401 error', done => {
-      request.get(`${url}/api/signin`)
-      .auth('exampleuser', 'bad1234')
-      .end((err, res) => {
-        expect(err).to.be.an('error');
-        expect(res.status).to.equal(401);
-        done();
+    describe('with authentication failure', function() {
+      it('should return a 401 error', done => {
+        request.get(`${url}/api/signin`)
+        .auth('testuser', 'bad1234')
+        .end((err, res) => {
+          expect(res.status).to.equal(401);
+          expect(err).to.be.an('error');
+          done();
+        });
+      });
+    });
+    describe('with a bad route', function() {
+      it('should return a 404 error', done => {
+        request.get(`${url}/api/`)
+        .auth('testuser', 'bad1234')
+        .end(res => {
+          expect(res.status).to.equal(404);
+          done();
+        });
       });
     });
   });
