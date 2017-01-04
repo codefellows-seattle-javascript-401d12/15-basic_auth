@@ -54,7 +54,7 @@ studentRouter.put('/api/student/:id', bearAuth, parseJSON, function(request, res
     if (student.userID.toString() !== request.user._id.toString()) return next(createError(401, 'Wrong user'));
     response.json(student);
   })
-  .catch(next);
+  .catch(err => next(createError(404, err.message)));
 });
 
 studentRouter.delete('/api/student/:id', bearAuth, function(request, response, next) {
