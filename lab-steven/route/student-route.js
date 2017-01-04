@@ -51,3 +51,11 @@ studentRouter.put('/api/student/:id', bearAuth, parseJSON, function(request, res
   })
   .catch(next);
 });
+
+studentRouter.delete('/api/student/:id', bearAuth, function(request, response, next) {
+  debug('DELETE: /api/student/:id');
+
+  Student.findByIdAndRemove(request.params.id)
+  .then(() => response.status(204).send('Student deleted.'))
+  .catch(next);
+});
