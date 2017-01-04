@@ -32,6 +32,15 @@ galleryRouter.get('/api/gallery/:id', bearerAuth, function(req, res, next) {
   .catch(next);
 });
 
+galleryRouter.get('/api/gallery', bearerAuth, function(req, res, next) {
+  debug('GET: /api/gallery');
+
+  Gallery.find({}, function(err, galleries){
+    if(err) return next(err);
+    res.json(galleries);
+  });
+});
+
 galleryRouter.put('/api/gallery/:id', bearerAuth, jsonParser, function(req, res, next) {
   debug('PUT: /api/gallery/:id');
 
