@@ -24,38 +24,28 @@ const sampleStudent = {
 };
 
 describe('Student routes', function() {
-  beforeEach(done => {
-    new User(sampleUser)
-    .createHash(sampleUser.password)
-    .then(user => {
-      this.tempUser = user;
-      return user.createToken();
-    })
-    .then(token => {
-      this.tempToken = token;
-      done();
-    })
+  afterEach(done => {
+    Promise.all([
+      User.remove({}),
+      Student.remove({})
+    ])
+    .then(() => done())
     .catch(done);
   });
 
   describe('POST: /api/student', () => {
     describe('With a valid body', () =>  {
       before(done => {
-        sampleStudent.userID = this.tempUser._id;
-        new Student(sampleStudent).save()
-        .then(student => {
-          this.tempStudent = student;
+        new User(sampleUser)
+        .createHash(sampleUser.password)
+        .then(user => {
+          this.tempUser = user;
+          return user.createToken();
+        })
+        .then(token => {
+          this.tempToken = token;
           done();
         })
-        .catch(done);
-      });
-
-      after(done => {
-        Promise.all([
-          Student.remove({}),
-          User.remove({})
-        ])
-        .then(() => done())
         .catch(done);
       });
 
