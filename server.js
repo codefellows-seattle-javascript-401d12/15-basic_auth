@@ -1,7 +1,7 @@
 'use strict';
 
 const cors = require('cors');
-const debug = require('debug')('cfgram:server');
+const debug = require('debug')('picgram:server');
 const dotenv = require('dotenv');
 const express = require('express');
 const morgan = require('morgan');

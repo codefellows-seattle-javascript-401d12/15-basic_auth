@@ -1,7 +1,7 @@
 'use strict';
 
 const jsonParser = require('body-parser').json();
-const debug = require('debug')('cfgram:auth-router');
+const debug = require('debug')('picgram:auth-router');
 const Router = require('express').Router;
 const basicAuth = require('../lib/basic-auth-middleware.js');
 
