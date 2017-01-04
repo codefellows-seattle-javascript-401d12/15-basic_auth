@@ -93,7 +93,7 @@ describe('Gallery Routes', function() {
     });
   });
   describe('GET: /api/gallery/:id', () => {
-    before( done => {
+    beforeEach( done => {
       new User(exampleUser)
       .generatePasswordHash(exampleUser.password)
       .then( user => user.save())
@@ -107,7 +107,7 @@ describe('Gallery Routes', function() {
       })
       .catch(done);
     });
-    before( done => {
+    beforeEach( done => {
       exampleGallery.userID = this.tempUser._id.toString();
       new Gallery(exampleGallery).save()
       .then( gallery => {
@@ -132,6 +132,25 @@ describe('Gallery Routes', function() {
         expect(res.body.desc).to.equal(exampleGallery.desc);
         expect(res.body.userID).to.equal(this.tempUser._id.toString());
         expect(date).to.not.equal('Invalid Date');
+        done();
+      });
+    });
+    it('should return a 401', done => {
+      request.get(`${url}/api/gallery/${this.tempGallery._id}`)
+      .end((err, res) => {
+        expect(err).to.be.an('error');
+        expect(res.status).to.equal(401);
+        done();
+      });
+    });
+    it('should return a 404', done => {
+      request.get(`${url}/api/gallery/586d2d44e61cdb0a8bdd1c69`)
+      .set({
+        Authorization: `Bearer ${this.tempToken}`
+      })
+      .end((err, res) => {
+        expect(err).to.be.an('error');
+        expect(res.status).to.equal(404);
         done();
       });
     });
@@ -176,6 +195,27 @@ describe('Gallery Routes', function() {
         expect(res.body.desc).to.equal('update desc');
         expect(res.body.userID).to.equal(this.tempUser._id.toString());
         expect(date).to.not.equal('Invalid Date');
+        done();
+      });
+    });
+    it('should return 401', done => {
+      request.put(`${url}/api/gallery/${this.tempGallery._id}`)
+      .send({name: 'update name', desc: 'update desc'})
+      .end((err, res) => {
+        expect(err).to.be.an('error');
+        expect(res.status).to.equal(401);
+        done();
+      });
+    });
+    it.only('should return 400', done => {
+      request.put(`${url}/api/gallery/${this.tempGallery._id}`)
+      .send({})
+      .set({
+        Authorization: `Bearer ${this.tempToken}`
+      })
+      .end((err, res) => {
+        expect(err).to.be.an('error');
+        expect(res.status).to.equal(400);
         done();
       });
     });
