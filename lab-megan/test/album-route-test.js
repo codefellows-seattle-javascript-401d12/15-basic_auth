@@ -175,7 +175,7 @@ describe('Album Routes', function() {
 
   describe('PUT: /api/album/:id', () => {
 
-    before( done => {
+    beforeEach( done => {
       new User(exampleUser)
       .generatePasswordHash(exampleUser.password)
       .then( user => user.save())
@@ -190,7 +190,7 @@ describe('Album Routes', function() {
       .catch(done);
     });
 
-    before( done => {
+    beforeEach( done => {
       exampleAlbum.userID = this.tempUser._id.toString();
       new Album(exampleAlbum).save()
       .then( album => {
@@ -228,8 +228,10 @@ describe('Album Routes', function() {
 
     // TODO: finish this test, currently returning a 200
     // it('should return a 400 error', done => {
-    //   var updatedInvalidAlbum = { name: '' };
-    //   // var updatedInvalidAlbum = { title: 'this is invalid' };
+    //   // console.log(':::::::::::::::::::::::::::::::::::::::::::::::::');
+    //   // var updatedInvalidAlbum = { name: '' };
+    //   var updatedInvalidAlbum = { title: 'this is invalid' };
+    //   // var updatedInvalidAlbum = 'invalid string';
     //   request.put(`${url}/api/album/${this.tempAlbum._id}`)
     //   .set({
     //     Authorization: `Bearer ${this.tempToken}`

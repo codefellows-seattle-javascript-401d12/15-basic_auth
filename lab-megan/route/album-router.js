@@ -35,7 +35,7 @@ albumRouter.put('/api/album/:id', bearerAuth, jsonParser, (req, res, next) => {
   debug('PUT: /api/album/:id');
 
   Album.findByIdAndUpdate(req.params.id, req.body, {new: true})
-  .then(album => res.json(album)) // need to return here?
+  .then(album => res.json(album))
   .catch( err => next(createError(404, err.message)));
 });
 
