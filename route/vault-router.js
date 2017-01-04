@@ -13,6 +13,11 @@ const vaultRouter = module.exports = Router();
 vaultRouter.post('/api/vault', bearerAuth, jsonParser, function(req, res, next) {
   debug('POST: /api/vault');
 
+  if(!req.body.name || !req.body.desc) {
+    res.status(400).send();
+    return;
+  }
+
   req.body.userID = req.user._id;
   new Vault(req.body).save()
   .then( vault => res.json(vault))
