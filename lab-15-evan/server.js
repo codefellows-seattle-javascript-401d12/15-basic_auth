@@ -10,6 +10,7 @@ const debug = require('debug')('lab15:server');
 
 
 const authRouter = require('./routes/auth-router.js');
+const blogRouter = require('./routes/blog-router.js');
 const errors = require('./lib/error-middleware.js');
 
 dotenv.load();
@@ -23,6 +24,7 @@ app.use(cors());
 app.use(morgan('dev'));
 
 app.use(authRouter);
+app.use(blogRouter);
 app.use(errors);
 
 app.listen(PORT, () => {
