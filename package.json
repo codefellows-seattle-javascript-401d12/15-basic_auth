@@ -1,5 +1,5 @@
 {
-  "name": "Basic and bearer auth.",
+  "name": "bearer-auth",
   "version": "1.0.0",
   "description": "Basic and bearer auth lab.",
   "main": "server.js",
