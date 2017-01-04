@@ -3,7 +3,7 @@
 This project creates a user and a gallery while authenticating user using [Express.js](http://expressjs.com/) and [MongoDB](https://docs.mongodb.com/). Users send a POST request to create user and GET request to authenticate sign in through the terminal. Once a user has been created and receives a token, they are able to send requests to the gallery enpoints.
 When sending User POST requests, use filepath `/api/signup`.
 When sending User GET requests, use filepath `/api/signin`.
-When sending POST request, use filepath `/api/gallery`.
+When sending Gallery requests, use filepath `/api/gallery`.
 You will need [HTTPie](https://httpie.org/) to send requests through the terminal.
 
 ## How to run
