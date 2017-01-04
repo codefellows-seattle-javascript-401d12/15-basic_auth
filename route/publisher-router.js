@@ -40,6 +40,11 @@ publisherRouter.get('/api/publisher/:id', bearerAuth, function(req, res, next) {
 publisherRouter.put('/api/publisher/:id', bearerAuth, jsonParser, function(req, res, next) {
   debug('PUT: /api/publisher/:id');
 
+  if (!req.body.name || !req.body.desc) {
+    res.status(400).send();
+    return;
+  }
+
   Publisher.findByIdAndUpdate(req.params, req.body, {new: true})
   .then(publisher => {
     if (publisher.userID.toString() !== req.user._id.toString()) {

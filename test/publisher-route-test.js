@@ -173,7 +173,57 @@ describe('Publisher Routes', function() {
         done();
       });
     });
+  });
 
+  describe('PUT: /api/publisher/:id', () => {
+    before(done => {
+      new User(testUser)
+      .generatePasswordHash(testUser.password)
+      .then(user => user.save())
+      .then(user => {
+        this.tempUser = user;
+        return user.generateToken();
+      })
+      .then(token => {
+        this.tempToken = token;
+        done();
+      })
+      .catch(done);
+    });
+
+    before(done => {
+      testPublisher.userID = this.tempUser._id.toString();
+      new Publisher(testPublisher).save()
+      .then(publisher => {
+        this.tempPublisher = publisher;
+        done();
+      })
+      .catch(done);
+    });
+
+    after(() => {
+      delete testPublisher.userID;
+    });
+
+    it.only('should return a new publisher', done => {
+      request.put(`${url}/api/publisher/${this.tempPublisher._id}`)
+      .set({
+        Authorization: `Bearer ${this.tempToken}`
+      })
+      .send({
+        name: 'new publisher name',
+        desc: 'new publisher description'
+      })
+      .end((err, res) => {
+        if (err) return done(err);
+        let date = new Date(res.body.created).toString();
+        expect(res.status).to.equal(200);
+        expect(res.body.name).to.equal('new publisher name');
+        expect(res.body.desc).to.equal('new publisher description');
+        expect(date).to.not.equal('Invalid Date');
+        done();
+      });
+    });
 
   });
 });
