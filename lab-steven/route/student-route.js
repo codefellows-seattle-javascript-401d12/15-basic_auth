@@ -38,7 +38,7 @@ studentRouter.get('/api/student/:id', bearAuth, function(request, response, next
     if (student.userID.toString() !== request.user._id.toString()) return next(createError(401, 'Wrong user'));
     response.json(student);
   })
-  .catch(next);
+  .catch(err => next(createError(404, err.message)));
 });
 
 studentRouter.put('/api/student/:id', bearAuth, parseJSON, function(request, response, next) {
