@@ -78,7 +78,7 @@ describe('Auth Routes', function(){
       });
     });
 
-    describe('with an invalid body', function(){
+    describe('with an invalid password', function(){
       before( done => {
         let user = new User(exampleUser);
         user.generatePasswordHash(exampleUser.password)

@@ -6,6 +6,7 @@ const debug = require('debug')('library:err-middleware');
 module.exports = function(err,req,res,next){
   debug('err-middleware');
 
+  console.error(err.name);
   if(err.status){
     res.status(err.status).send(err.name);
     next();
