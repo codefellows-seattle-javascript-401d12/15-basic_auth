@@ -18,3 +18,16 @@ publisherRouter.post('/api/publisher', bearerAuth, jsonParser, function(req, res
   .then(publisher => res.json(publisher))
   .catch(next);
 });
+
+publisherRouter.get('/api/publisher/:id', bearerAuth, function(req, res, next) {
+  debug('GET: /api/publisher/:id');
+
+  Publisher.findById(req.params.id)
+  .then(publisher => {
+    if (publisher.userID.toString() !== req.user._id.toString()) {
+      return next(createError(401, 'invalid user'));
+    }
+    res.json(publisher);
+  })
+  .catch(next);
+});
