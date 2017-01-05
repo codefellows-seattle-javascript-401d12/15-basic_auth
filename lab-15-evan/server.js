@@ -8,7 +8,7 @@ const mongoose = require('mongoose');
 const Promise = require('bluebird');
 const debug = require('debug')('lab15:server');
 
-
+const postRouter = require('./routes/post-router.js');
 const authRouter = require('./routes/auth-router.js');
 const blogRouter = require('./routes/blog-router.js');
 const errors = require('./lib/error-middleware.js');
@@ -23,10 +23,13 @@ mongoose.connect(process.env.MONGODB_URI);
 app.use(cors());
 app.use(morgan('dev'));
 
+app.use(postRouter);
 app.use(authRouter);
 app.use(blogRouter);
 app.use(errors);
 
-app.listen(PORT, () => {
+const server = module.exports = app.listen(PORT, () => {
   debug(`Server running on ${PORT}`);
 });
+
+server.isRunning = true;
