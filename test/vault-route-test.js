@@ -161,5 +161,80 @@ describe('Vault Routes', function() {
       });
     });
   });
+  describe('PUT: /api/vault/:id', () => {
+    before( done => {
+      new User(exampleUser)
+      .generatePasswordHash(exampleUser.password)
+      .then( user => user.save())
+      .then( user => {
+        this.tempUser = user;
+        return user.generateToken();
+      })
+      .then( token => {
+        this.tempToken = token;
+        done();
+      })
+      .catch(done);
+    });
+    before( done => {
+      exampleVault.userID = this.tempUser._id.toString();
+      new Vault( exampleVault).save()
+      .then( vault => {
+        this.tempVault = vault;
+        done();
+      })
+      .catch(done);
+    });
 
+    it('should update a vault with valid body', done => {
+      request.put(`${url}/api/vault/${this.tempVault._id}`)
+      .set({
+        Authorization: `Bearer ${this.tempToken}`
+      })
+      .send(exampleVault)
+      .end((err, res) => {
+        expect(res.status).to.equal(200);
+        expect(res.body.name).to.equal(exampleVault.name);
+        expect(res.body.desc).to.equal(exampleVault.desc);
+        expect(res.body.userID).to.equal(this.tempUser._id.toString());
+        done();
+      });
+    });
+    it('should throw a 401 if no token provided', done => {
+      request.put(`${url}/api/vault/${this.tempVault._id}`)
+      .set({
+        Authorization: 'Bearer'
+      })
+      .send(exampleVault)
+      .end((err, res) => {
+        expect(res.status).to.equal(401);
+        expect(err).to.be.an('error');
+        done();
+      });
+    });
+    it.only('should throw a 400 if body is invalid', done => {
+      request.put(`${url}/api/vault/${this.tempVault._id}`)
+      .set({
+        Authorization: `Bearer ${this.tempToken}`
+      })
+      .send({ name: 'invalid vault' })
+      .end((err, res) => {
+        expect(res.status).to.equal(400);
+        expect(err).to.be.an('error');
+        done();
+      });
+    });
+    it('should throw a 404 if valid request and no id found', done => {
+      request.put(`${url}/api/vault/`)
+      .set({
+        Authorization: `Bearer ${this.tempToken}`
+      })
+      .send(exampleVault)
+      .end((err, res) => {
+        expect(res.status).to.equal(404);
+        expect(err).to.be.an('error');
+        done();
+      });
+    });
+  });
 });

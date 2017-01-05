@@ -40,9 +40,19 @@ vaultRouter.get('/api/vault/:id', bearerAuth, function(req, res, next) {
 vaultRouter.put('/api/vault/:id', bearerAuth, jsonParser, function(req, res, next) {
   debug('PUT: /api/vault/:id');
 
+  if (!req.body.name || !req.body.desc) {
+    res.status(400).send();
+    return;
+  }
+
   Vault.findByIdAndUpdate(req.params.id, req.body, {new: true})
-  .then( vault => res.json(vault))
-  .catch( err => next(createError(404, err.message)));
+  .then( vault => {
+    if (vault.userID.toString() !== req.user._id.toString()) {
+      return next(createError(401, 'invalid user'));
+    }
+    res.json(vault);
+  })
+  .catch(next);
 });
 
 vaultRouter.delete('/api/vault/:id', function(req, res, next) {
