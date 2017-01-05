@@ -71,6 +71,7 @@ describe('Pic Routes', function() {
 
       before( done => {
         examplePhotobook.userID = this.tempUser._id.toString();
+        examplePic.userID = this.tempUser._id.toString();
         new Photobook(examplePhotobook).save()
         .then( photobook => {
           this.tempPhotobook = photobook;
@@ -105,19 +106,60 @@ describe('Pic Routes', function() {
   });
 });
 
-describe('DELETE: /api/photobook/:photobookID/pic/:picID', () => {
-  describe('with a valid token and valid data', () => {
-
-    it('should return a 204 status code', done => {
-      request.delete(`${url}/api/photobook/${this.tempPhotobook._id}/pic/${this.tempPic._id}`)
-      .set({
-        Authorization: `Bearer ${this.tempToken}`
-      })
-      .end((err, res) => {
-        if (err) return done(err);
-        expect(res.status).to.equal(204);
-        done();
-      });
-    });
-  });
-});
+// describe('DELETE: /api/photobook/:photobookID/pic/:picID', () => {
+//   describe('with a valid token and valid data', () => {
+//     before( done => {
+//       new User(exampleUser)
+//       .generatePasswordHash(exampleUser.password)
+//       .then( user => user.save())
+//       .then( user => {
+//         this.tempUser = user;
+//         return user.generateToken();
+//       })
+//       .then( token => {
+//         this.tempToken = token;
+//         done();
+//       })
+//       .catch(done);
+//     });
+//
+//     before( done => {
+//       examplePhotobook.userID = this.tempUser._id.toString();
+//       new Photobook(examplePhotobook).save()
+//       .then( photobook => {
+//         this.tempPhotobook = photobook;
+//         done();
+//       })
+//       .catch(done);
+//     });
+//
+//     before( done => {
+//       examplePic.userID = this.tempUser._id.toString();
+//       examplePic.photobookID = this.tempPhotobook._id.toString();
+//       new Pic(examplePic).save()
+//       .then( pic => {
+//         this.tempPic = pic;
+//         done();
+//       })
+//       .catch(done);
+//     });
+//
+//     after(() => {
+//       delete examplePhotobook.userID;
+//       delete examplePic.userID;
+//       delete examplePic.photobookID;
+//     });
+//
+//     it('should return a 204 status code', done => {
+//       request.delete(`${url}/api/photobook/${this.tempPhotobook._id}/pic/${this.tempPic._id}`)
+//       .set({
+//         Authorization: `Bearer ${this.tempToken}`
+//       })
+//       .end((err, res) => {
+//         if (err) return done(err);
+//         expect(res.status).to.equal(204);
+//         done();
+//       });
+//     });
+//   });
+// });
