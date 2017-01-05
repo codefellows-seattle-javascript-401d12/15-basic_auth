@@ -20,3 +20,12 @@ const dataDir = `${__dirname}/../data`;
 const upload = multer({dest: dataDir});
 
 const manuscriptRouter = module.exports = Router();
+
+function s3uploadProm(params) {
+  return new Promise((resolve, reject) => {
+    s3.upload(params, (err, s3data) => {
+      if (err) return reject(err);
+      resolve(s3data);
+    });
+  });
+}
