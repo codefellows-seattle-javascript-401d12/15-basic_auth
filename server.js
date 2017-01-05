@@ -31,6 +31,8 @@ app.use(vaultRouter);
 app.use(imageRouter);
 app.use(errors);
 
-app.listen(PORT, () => {
+const server = module.exports = app.listen(PORT, () => {
   debug(`server up on ${PORT}`);
 });
+
+server.isRunning = true;
