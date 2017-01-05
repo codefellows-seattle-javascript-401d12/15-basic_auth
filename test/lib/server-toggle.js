@@ -8,7 +8,7 @@ exports.serverOn = function(server, done) {
   if(!server.isRunning) {
     server.listen(process.env.PORT, () => {
       server.isRunning = true;
-      debug('Server up');
+      debug('Server UP');
       done();
     });
     return;
@@ -21,7 +21,7 @@ exports.serverOff = function(server, done) {
     server.close( err => {
       if (err) return done(err);
       server.isRunning = false;
-      debug('Server down');
+      debug('Server DOWN');
       done();
     });
     return;
