@@ -87,31 +87,9 @@ describe('Assignment routes', function() {
         .attach('text assignment', sampleAssignment.text)
         .end((err, response) => {
           if (err) return done(err);
-          sampleAssignment.objectKey = response.body.objectKey;
-          sampleAssignment.textURI = response.body.textURI;
-          new Assignment(sampleAssignment).save()
-          .then(assignment => this.tempAssignment = assignment);
+          this.tempAssignment = response.body;
           expect(response.body.name).to.equal(sampleAssignment.name);
           expect(response.body.details).to.equal(sampleAssignment.details);
-          expect(response.body.studentID).to.equal(this.tempStudent._id.toString());
-          done();
-        });
-      });
-    });
-  });
-
-  describe('GET: /api/assignment/:assignmentID', () => {
-    describe('With a valid token and ID', () => {
-      it('should return an assignment', done => {
-        request
-        .get(`${url}/api/assignment/${this.tempAssignment._id}`)
-        .set({authorization: `Bearer ${this.tempToken}`})
-        .end((err, response) => {
-          if (err) return done(err);
-          expect(response.body.name).to.equal(sampleAssignment.name);
-          expect(response.body.details).to.equal(sampleAssignment.details);
-          expect(response.status).to.equal(200);
-          expect(response.body.userID).to.equal(this.tempUser._id.toString());
           expect(response.body.studentID).to.equal(this.tempStudent._id.toString());
           done();
         });

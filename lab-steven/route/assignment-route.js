@@ -67,31 +67,3 @@ assignmentRouter.post('/api/student/:studentID/assignment', bearAuth, upload.sin
   .then(assignment => response.json(assignment))
   .catch(err => next(err));
 });
-
-assignmentRouter.get('/api/assignment/:assignmentID', bearAuth, function(request, response, next) {
-  debug('GET: /api/assignment/:assignmentID');
-
-  Assignment.findById(request.params.assignmentID)
-  .then(assignment => {
-    let params = {
-      Bucket: process.env.AWS_BUCKET,
-      Key: assignment.objectKey
-    };
-    s3fetchProm(params);
-  })
-  .then(assignmentData => response.json(assignmentData))
-  .catch(err => next(err));
-});
-
-// assignmentRouter.put('/api/assignment/:assignmentID', bearAuth, upload.single('text assignment'), function(request, response, next) {
-//   debug('PUT: /api/assignment/:assignmentID');
-//
-//   Assignment.findByIdAndUpdate(request.params.assignmentID, request.body)
-//   .then(assignment => {
-//     let params = {
-//       Bucket: process.env.AWS_BUCKET,
-//       Key: assignment.objectKey
-//     };
-//
-//   })
-// });
