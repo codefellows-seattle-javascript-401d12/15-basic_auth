@@ -21,6 +21,8 @@ app.use(errors);
 
 mongoose.connect(process.env.MONGODB_URI);
 
-app.listen(process.env.PORT, function() {
+const server = module.exports = app.listen(process.env.PORT, function() {
   debug(`Server started on port ${process.env.PORT}`);
 });
+
+server.on = true;
