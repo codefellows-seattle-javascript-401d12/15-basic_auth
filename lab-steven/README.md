@@ -2,7 +2,7 @@
 ###Lab for 401 JS
 
 ###Overview
-This is a simple app that practices basic authorization using the bcrypt and crypto modules and bearer authentication.
+This is a simple app that practices basic authorization using the bcrypt and crypto modules and bearer authentication. It also makes use of the AWS S3 platform for file storage with an assignment resource.
 
 ###Installation
 Clone this repo, then navigate to the `lab-steven` directory and run `npm i`.
