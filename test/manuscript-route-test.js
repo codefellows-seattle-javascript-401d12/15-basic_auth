@@ -105,5 +105,20 @@ describe('Manuscript Routes', function() {
     });
   });
 
+  // describe('DELETE: /api/publisher/:publisherID/manuscript/:manuscriptID', () => {
+  //   describe('with a valid token and valid ID', () => {
+  //     it.only('should return a 204 status for successful deletion', done => {
+  //       request.delete(`${url}/api/publisher/${this.tempPublisher._id}/manuscript/${this.testManuscript._id}`)
+  //       .set({
+  //         Authorization: `Bearer ${this.tempToken}`
+  //       })
+  //       .end(res => {
+  //         expect(res.status).to.equal(204);
+  //         done();
+  //       });
+  //     });
+  //   });
+  // });
+
 
 });
