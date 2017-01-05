@@ -1,15 +1,16 @@
 'use strict';
 
-const debug = require('debug')('kauth:router');
+const Debug = require('debug')('kauth:router');
 const jsonParser = require('body-parser').json();
-const ExpressRouter = require('express').Router;
-const User = require('../model/user.js');
-const authMiddleware = require('../lib/basic-auth-middleware');
+const Express = require('express');
 
-const kauthRouter = module.exports = ExpressRouter();
+const User = require('../model/user.js');
+const authMiddlewareBasic = require('../lib/basic-auth-middleware');
+
+const kauthRouter = module.exports = Express.Router();
 
 kauthRouter.post('/api/signup', jsonParser, (req, res, next) => {
-  debug('POST: api/signup');
+  Debug('POST: api/signup');
 
   try {
     var newUser = new User(req.body);
@@ -19,22 +20,15 @@ kauthRouter.post('/api/signup', jsonParser, (req, res, next) => {
     err.name = 'bad request';
     next(err);
   }
-
   newUser.hashPassword(req.body.password)
   .then( user => user.save())
   .then( user => user.generateToken())
   .then( token => res.send(token))
-  .catch( err => {
-    if (err) {
-      err.status = 400;
-      err.name = 'bad password';
-      next(err);
-    }
-  });
+  .catch(next);
 });
 
-kauthRouter.get('/api/signin', authMiddleware, (req, res, next) => {
-  debug('GET: api/signin');
+kauthRouter.get('/api/signin', authMiddlewareBasic, (req, res, next) => {
+  Debug('GET: api/signin');
 
   User.findOne({username: req.auth.username})
   .then( foundUser => foundUser.comparePasswordHash(req.auth.password))

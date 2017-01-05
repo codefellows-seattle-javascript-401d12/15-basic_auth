@@ -45,6 +45,7 @@ describe('Auth routes', function() {
           done();
         });
       });
+
     });
 
     describe('with an INVALID body', function() {
@@ -64,18 +65,21 @@ describe('Auth routes', function() {
           done();
         });
       });
+
     });
+
   });
 
   describe('GET: /api/signin', function() {
+
     describe('with a valid body', function() {
 
       before( done => {
         let user = new User(exampleUser);
         user.hashPassword(exampleUser.password)
-        .then( user => user.save())
-        .then( user => {
-          this.tempUser = user;
+        .then( userWithHash => userWithHash.save())
+        .then( savedUser => {
+          this.tempUser = savedUser;
           done();
         })
         .catch(done);
@@ -89,8 +93,9 @@ describe('Auth routes', function() {
 
       it('should return a token', done => {
         request.get(`${url}/api/signin`)
-        .auth('exampleuser', 'examplepassword') //
+        .auth('exampleuser', 'examplepassword')
         .end( (err, res) => {
+          console.log('RETURNED res.text:');
           if (err) return done(err);
           expect(res.status).to.equal(200);
           done();

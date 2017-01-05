@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "DEBUG='kauth*' gulp",
+    "test": "DEBUG='kauth*' mocha",
     "start": "DEBUG='kauth*' nodemon server.js"
   },
   "repository": {

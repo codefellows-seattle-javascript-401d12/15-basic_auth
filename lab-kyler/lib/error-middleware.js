@@ -10,7 +10,7 @@ module.exports = function(err, req, res, next) { //eslint-disable-line
 
   if(err.status) {
     console.error('user error:', err.status);
-    res.status(err.status).send(err.name);
+    res.status(err.status).send(err.message);
     next();
     return;
   }

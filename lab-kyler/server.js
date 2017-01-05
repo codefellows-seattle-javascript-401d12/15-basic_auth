@@ -9,6 +9,7 @@ const Promise = require('bluebird');
 const debug = require('debug')('kauth:server');
 
 const kauthRouter = require('./route/kauth-router.js');
+const jokeRouter = require('./route/joke-router.js');
 const errors = require('./lib/error-middleware.js');
 
 dotenv.load();
@@ -23,6 +24,7 @@ mongoose.connect(process.env.MONGODB_URI);
 //app.use(cors());
 app.use(morgan('dev'));
 app.use(kauthRouter);
+app.use(jokeRouter);
 app.use(errors);
 
 app.listen(PORT, () => {
