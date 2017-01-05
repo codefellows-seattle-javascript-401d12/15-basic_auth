@@ -43,7 +43,6 @@ describe('Album Routes', function() {
       .generatePasswordHash(exampleUser.password)
       .then( user => user.save())
       .then( user => {
-        console.log(user);
         this.tempUser = user;
         return user.generateToken();
       })
@@ -149,7 +148,6 @@ describe('Album Routes', function() {
       request.get(`${url}/api/album/${this.tempAlbum._id}`)
       .end((err, res) => {
         expect(res.status).to.equal(401);
-        // TODO: add more expects
         done();
       });
     });
@@ -162,7 +160,6 @@ describe('Album Routes', function() {
       })
       .end((err, res) => {
         expect(res.status).to.equal(404);
-        // TODO: add more expects
         done();
       });
     });
@@ -221,7 +218,6 @@ describe('Album Routes', function() {
       .send(updatedAlbum)
       .end((err, res) => {
         expect(res.status).to.equal(401);
-        // TODO: add more expects
         done();
       });
     });
