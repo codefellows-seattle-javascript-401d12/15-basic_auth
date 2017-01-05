@@ -89,6 +89,7 @@ describe('Pic Routes', function() {
           expect(res.body.name).to.equal(examplePic.name);
           expect(res.body.desc).to.equal(examplePic.desc);
           expect(res.body.galleryID).to.equal(this.tempGallery._id.toString());
+          done();
         });
       });
     });

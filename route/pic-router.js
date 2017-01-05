@@ -67,3 +67,5 @@ picRouter.post('/api/gallery/:galleryID/pic', bearerAuth, upload.single('image')
   .then( pic => res.json(pic))
   .catch( err => next(err));
 });
+
+// picRouter.delete('/api/gallery/:galleryID/pic/:picID', bearerAuth, )
