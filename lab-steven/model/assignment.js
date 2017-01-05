@@ -9,7 +9,8 @@ const assignmentSchema = Schema({
   studentID: {type: Schema.Types.ObjectId, required: true},
   userID: {type: Schema.Types.ObjectId, required: true},
   textURI: {type: String, required: true, unique: true},
-  objectKey: {type: String, required:true, unique: true}
+  objectKey: {type: String, required:true, unique: true},
+  s3data: String
 });
 
 module.exports = mongoose.model('assignment', assignmentSchema);

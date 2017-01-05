@@ -95,6 +95,26 @@ describe('Assignment routes', function() {
     });
   });
 
+  describe('GET: /api/assignment/:assignmentID', () => {
+    describe('With a valid token and ID', () => {
+      it('should return an assignment', done => {
+        request
+        .get(`${url}/api/assignment/${this.tempAssignment._id}`)
+        .set({authorization: `Bearer ${this.tempToken}`})
+        .end((err, response) => {
+          if (err) return done(err);
+          expect(response.status).to.equal(200);
+          expect(response.body.name).to.equal(sampleAssignment.name);
+          expect(response.body.details).to.equal(sampleAssignment.details);
+          expect(response.body.userID).to.equal(this.tempUser._id.toString());
+          expect(response.body.studentID).to.equal(this.tempStudent._id.toString());
+          expect(response.body.s3data).to.equal('This is some sample text for a test assignment.');
+          done();
+        });
+      });
+    });
+  });
+
   describe('DELETE: /api/assignment/:assignmentID', () => {
     describe('With a valid token and ID', () => {
       it('should return a 204 status', done => {

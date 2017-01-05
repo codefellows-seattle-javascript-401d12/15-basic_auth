@@ -59,6 +59,24 @@ assignmentRouter.post('/api/student/:studentID/assignment', bearAuth, upload.sin
   .catch(err => next(err));
 });
 
+assignmentRouter.get('/api/assignment/:assignmentID', bearAuth, function(request, response, next) {
+  debug('GET: /api/assignment/:assignmentID');
+
+  Assignment.findById(request.params.assignmentID)
+  .then(assignment => {
+    let params = {
+      Bucket: process.env.AWS_BUCKET,
+      Key: assignment.objectKey
+    };
+    s3.getObject(params, (err, data) => {
+      if (err) return next(err);
+      assignment.s3data = data.Body.toString().split('\n')[0];
+      response.json(assignment);
+    });
+  })
+  .catch(err => next(err));
+});
+
 assignmentRouter.delete('/api/assignment/:assignmentID', bearAuth, function(request, response, next) {
   debug('DELETE: /api/assignment/:assignmentID');
 
