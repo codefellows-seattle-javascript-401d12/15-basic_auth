@@ -80,10 +80,20 @@ describe('Pic Routes', function() {
         })
         .catch(done);
       });
+
       after( done => {
-        delete exampleGallery.userID;
-        done();
+        Promise.all([
+          Pic.remove({}),
+          User.remove({}),
+          Gallery.remove({})
+        ])
+        .then( () => {
+          console.log('afterEach');
+          done();
+        })
+        .catch(done);
       });
+
       it('should return a pic', done => {
         request.post(`${url}/api/gallery/${this.tempGallery._id}/pic`)
         .set({
@@ -136,6 +146,19 @@ describe('Pic Routes', function() {
         new Pic(examplePic).save()
         .then( pic => {
           this.tempPic = pic;
+          done();
+        })
+        .catch(done);
+      });
+
+      after( done => {
+        Promise.all([
+          Pic.remove({}),
+          User.remove({}),
+          Gallery.remove({})
+        ])
+        .then( () => {
+          console.log('afterEach');
           done();
         })
         .catch(done);
