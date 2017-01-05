@@ -24,7 +24,6 @@ const photoRouter = module.exports = Router();
 function s3uploadProm(params) {
   return new Promise((resolve, reject) => {
     s3.upload(params, (err, s3data) => {
-      // console.log(err);
       if(err) return reject(err);
       resolve(s3data);
     });
@@ -71,34 +70,14 @@ photoRouter.post('/api/album/:albumID/photo', bearerAuth, upload.single('image')
 
 photoRouter.delete('/api/album/:albumID/photo/:photoID', bearerAuth, function(req, res, next) {
   debug('DELETE /api/album/:albumID/photo/photoIDs');
-  console.log('\n\n::: reached inside of photo router delete block\n\n');
 
-  // if(!req.file) {
-  //   return next(createError(400, 'file not found'));
-  // }
-  //
-  // if (!req.file.path) {
-  //   return next(createError(500, 'file not saved'));
-  // }
-
-  // delete from s3 Bucket
-
-  // let ext = path.extname(req.file.originalname);
-
-  // console.log('::: params are:', params);
   let params = {
-    // ACL: 'public-read',
     Bucket: process.env.AWS_BUCKET,
     Key: req.params.imageID
-    // Body: fs.createReadStream(req.file.path)
   };
 
   s3.deleteObject(params);
 
-  // delete from data folder
-  // delete all data folder?
-  // Photo.remove({});
-  // delete from mongo?
   Photo.findByIdAndRemove(req.params.imageID)
   .then( () => res.status(204).send())
   .catch( err => next(createError(404, err.message)));
