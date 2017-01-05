@@ -35,7 +35,12 @@ albumRouter.put('/api/album/:id', bearerAuth, jsonParser, (req, res, next) => {
   debug('PUT: /api/album/:id');
 
   Album.findByIdAndUpdate(req.params.id, req.body, {new: true})
-  .then(album => res.json(album))
+  .then( album => {
+    if ((req.body.name == undefined) || (req.body.description == undefined)) {
+      return next(createError(400, 'invalid body'));
+    }
+    res.json(album);
+  })
   .catch( err => next(createError(404, err.message)));
 });
 

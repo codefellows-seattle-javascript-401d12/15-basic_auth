@@ -201,7 +201,7 @@ describe('Album Routes', function() {
     });
 
     it('should update an album', done => {
-      var updatedAlbum = { name: 'updated album name' };
+      var updatedAlbum = { name: 'updated album name', description: 'updated album description' };
       request.put(`${url}/api/album/${this.tempAlbum._id}`)
       .set({
         Authorization: `Bearer ${this.tempToken}`
@@ -226,22 +226,18 @@ describe('Album Routes', function() {
       });
     });
 
-    // TODO: finish this test, currently returning a 200
-    // it('should return a 400 error', done => {
-    //   // console.log(':::::::::::::::::::::::::::::::::::::::::::::::::');
-    //   // var updatedInvalidAlbum = { name: '' };
-    //   var updatedInvalidAlbum = { title: 'this is invalid' };
-    //   // var updatedInvalidAlbum = 'invalid string';
-    //   request.put(`${url}/api/album/${this.tempAlbum._id}`)
-    //   .set({
-    //     Authorization: `Bearer ${this.tempToken}`
-    //   })
-    //   .send(updatedInvalidAlbum)
-    //   .end((err, res) => {
-    //     expect(res.status).to.equal(400);
-    //     done();
-    //   });
-    // });
+    it('should return a 400 error', done => {
+      var updatedInvalidAlbum = { name: '' };
+      request.put(`${url}/api/album/${this.tempAlbum._id}`)
+      .set({
+        Authorization: `Bearer ${this.tempToken}`
+      })
+      .send(updatedInvalidAlbum)
+      .end((err, res) => {
+        expect(res.status).to.equal(400);
+        done();
+      });
+    });
 
     it('should update an album', done => {
       var updatedAlbum = { name: 'updated album name' };
