@@ -76,7 +76,7 @@ describe('Pic Routes', function() {
         delete exampleGallery.userID;
         done();
       });
-      it('should return a pic', done => {
+      it.only('should return a pic', done => {
         request.post(`${url}/api/gallery/${this.tempGallery._id}/pic`)
         .set({
           Authorization: `Bearer ${this.tempToken}`

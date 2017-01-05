@@ -6,9 +6,11 @@ const mongoose = require('mongoose');
 const Promise = require('bluebird');
 const User = require('../model/user.js');
 
+const serverToggle = require('./lib/server-toggle.js');
+
 mongoose.Promise = Promise;
 
-require('../server.js');
+const server = require('../server.js');
 
 const url = `http://localhost:${process.env.PORT}`;
 
@@ -19,6 +21,13 @@ const exampleUser = {
 };
 
 describe('Auth Routes', function() {
+  before( done => {
+    serverToggle.serverOn(server, done);
+  });
+  after( done => {
+    serverToggle.serverOff(server, done);
+  });
+  
   describe('POST: /api/signup', function() {
     describe('with a valid body', function() {
       after( done => {
