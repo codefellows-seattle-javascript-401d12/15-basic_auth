@@ -26,6 +26,8 @@ app.use(authRouter);
 app.use(publisherRouter);
 app.use(errors);
 
-app.listen(PORT, () => {
+const server = module.exports = app.listen(PORT, () => {
   debug(`server running: ${PORT}`);
 });
+
+server.isRunning = true;
