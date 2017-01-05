@@ -19,9 +19,12 @@ blogRouter.post('/api/blog', bearerAuth, jsonParser, function(req, res, next) {
   .catch(next);
 });
 
-blogRouter.get('/api/blog/:id', bearerAuth, jsonParser, function(req, res, next) {
+blogRouter.get('/api/blog/:id', bearerAuth,  function(req, res, next) {
   debug('GET: /api/blog/:id');
 
+  if(req.params.id === null || req.params.id === undefined) {
+    return createError(400, err.message);
+  }
   Blog.findById(req.params.id)
   .then( blog => {
     if(blog.memberID.toString() !== req.member._id.toString()) {
@@ -37,10 +40,20 @@ blogRouter.put('/api/blog/:id', bearerAuth, jsonParser, function(req, res, next)
 
   Blog.findByIdAndUpdate(req.params.id, req.body, { new: true })
   .then( blog => {
-    // if(blog.memberID.toString() !== req.member._id.toString()) {
-    //   return next(createError(401, 'Invalid member'));
-    // }
+    if(blog.memberID.toString() !== req.member._id.toString()) {
+      return next(createError(401, 'Invalid member'));
+    }
     res.json(blog);
+  })
+  .catch(next);
+});
+
+blogRouter.delete('/api/blog/:id', bearerAuth, function(req, res, next) {
+  debug('DELETE: /api/blog/:id');
+
+  Blog.findByIdAndRemove(req.params.id)
+  .then( () => {
+    res.status(204).send();
   })
   .catch(next);
 });
