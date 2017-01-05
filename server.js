@@ -10,6 +10,7 @@ const debug = require('debug')('cfgram:server');
 
 const authRouter = require('./route/auth-router.js');
 const vaultRouter = require('./route/vault-router.js');
+const imageRouter = require('./route/image-router.js');
 const errors = require('./lib/error-middleware');
 
 dotenv.load();
@@ -27,6 +28,7 @@ app.use(morgan('dev'));
 
 app.use(authRouter);
 app.use(vaultRouter);
+app.use(imageRouter);
 app.use(errors);
 
 app.listen(PORT, () => {

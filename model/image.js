@@ -7,7 +7,7 @@ const imageSchema = Schema({
   name: { type: String, required: true},
   desc: { type: String, required: true},
   useRID: { type: Schema.Types.ObjectId, required: true},
-  galleryID: { type: Schema.Types.ObjectId, required: true},
+  vaultID: { type: Schema.Types.ObjectId, required: true}, //TODO double check this
   imageURI: {type: String, required: true, unique: true},
   objectKey: { type: String, required: true, unique: true},
   created: {type: Date, default: Date.now}
