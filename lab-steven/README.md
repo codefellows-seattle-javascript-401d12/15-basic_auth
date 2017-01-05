@@ -26,3 +26,13 @@ These work like a combination of a GET and POST - access `/api/student/:id`, pas
 
 ###DELETE Requests
 You can DELETE students the same way you make a GET request.
+
+##Usage - Assignments
+###POST Requests
+You can POST new assignments to the API at `/api/student/:studentID/assignment` by passing in a name, details, and the proper student ID within the URL. You will need to include your bearer token in your request header. You will also need to include a .txt file as an attachment. This will be uploaded to S3 storage on Amazon AWS.
+
+###GET Requests
+You can GET assignments from `/api/assignment/:assignmentID` by including your bearer token in the request header, then appending the appropriate student ID to the URL. You will get back information on that assignment, including the content of the .txt file on the s3data property.
+
+###DELETE Requests
+You can DELETE assignments the same way you make GET requests.

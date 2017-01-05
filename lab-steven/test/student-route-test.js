@@ -6,11 +6,11 @@ const mongoose = require('mongoose');
 const Promise = require('bluebird');
 const User = require('../model/user.js');
 const Student = require('../model/student.js');
+const server = require('../server.js');
+const serverSwitch = require('./lib/server-switch.js');
 const url = `http://localhost:${process.env.PORT}`;
 
 mongoose.Promise = Promise;
-
-require('../server.js');
 
 const sampleUser = {
   username: 'Test user',
@@ -24,6 +24,14 @@ const sampleStudent = {
 };
 
 describe('Student routes', function() {
+  before(done => {
+    serverSwitch.startServer(server, done);
+  });
+
+  after(done => {
+    serverSwitch.stopServer(server, done);
+  });
+
   afterEach(done => {
     Promise.all([
       User.remove({}),

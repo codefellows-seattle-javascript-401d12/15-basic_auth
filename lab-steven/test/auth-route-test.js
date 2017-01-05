@@ -5,11 +5,11 @@ const request = require('superagent');
 const mongoose = require('mongoose');
 const Promise = require('bluebird');
 const User = require('../model/user.js');
+const server = require('../server.js');
+const serverSwitch = require('./lib/server-switch.js');
 const url = `http://localhost:${process.env.PORT}`;
 
 mongoose.Promise = Promise;
-
-require('../server.js');
 
 const sampleUser = {
   username: 'Test user',
@@ -18,6 +18,14 @@ const sampleUser = {
 };
 
 describe('Auth routes', function() {
+  before(done => {
+    serverSwitch.startServer(server, done);
+  });
+
+  after(done => {
+    serverSwitch.stopServer(server, done);
+  });
+  
   describe('POST: /api/createuser', function() {
     describe('With a valid body', function() {
       after(done => {
