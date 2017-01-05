@@ -96,4 +96,19 @@ describe('Assignment routes', function() {
       });
     });
   });
+
+  describe('DELETE: /api/assignment/:assignmentID', () => {
+    describe('With a valid token and ID', () => {
+      it('should return a 204 status', done => {
+        request
+        .delete(`${url}/api/assignment/${this.tempAssignment._id}`)
+        .set({authorization: `Bearer ${this.tempToken}`})
+        .end((err, response) => {
+          if (err) return done(err);
+          expect(response.status).to.equal(204);
+          done();
+        });
+      });
+    });
+  });
 });
