@@ -25,7 +25,7 @@ function s3uploadProm(params) {
   return new Promise((resolve, reject) => {
 
     s3.upload(params, (err, s3data) => {
-      if (err) return reject (err); 
+      if (err) return reject (err);
       resolve(s3data);
     });
   });
@@ -68,4 +68,26 @@ imageRouter.post('/api/vault/:vaultID/image', bearerAuth, upload.single('image')
   .then( image => res.json(image))
   .catch( err => next(err));
 
+});
+
+imageRouter.delete('/api/vault/:vaultID/image/:imageID', bearerAuth, function(req, res, next) {
+  debug('DELETE: /api/vault/:vaultID/image/:imageID');
+
+  Image.findById(req.params.imageID)
+  .then(image => {
+
+    let params = {
+      Bucket: process.env.AWS_BUCKET,
+      Key: image.objectKey
+    };
+    s3.deleteObject(params, err => {
+      if(err) return next(err);
+    });
+  })
+  .catch(err => next(err));
+
+  Image.findByIdAndRemove(req.params.imageID)
+  .then(() => res.status(204).send())
+  .catch(err => next(err));
+  
 });

@@ -81,7 +81,7 @@ describe('Pic Routes', function() {
         done();
       });
 
-      it.only('should return a pic', done => {
+      it('should return a pic', done => {
         request.post(`${url}/api/vault/${this.tempVault._id}/image`)
         .set({
           Authorization: `Bearer ${this.tempToken}`
@@ -94,6 +94,22 @@ describe('Pic Routes', function() {
           expect(res.body.name).to.equal(exampleImage.name);
           expect(res.body.desc).to.equal(exampleImage.desc);
           expect(res.body.vaultID).to.equal(this.tempVault._id.toString());
+          done();
+        });
+      });
+    });
+  });
+
+  describe('DELETE:', function() {
+    describe('with a vaild id', function() {
+      it.only('should delete and return 204', done => {
+        request.delete(`${url}/api/image/${this.tempImage._id}`)
+        .set({
+          Authorization: `Bearer ${this.tempToken}`
+        })
+        .end((err, res) => {
+          if(err) return done(err);
+          expect(res.status).to.equal(204);
           done();
         });
       });
