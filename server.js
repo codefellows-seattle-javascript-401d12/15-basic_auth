@@ -8,6 +8,7 @@ const mongoose = require('mongoose');
 const Promise = require('bluebird');
 const debug = require('debug')('cfgram:server');
 
+const manuscriptRouter = require('./route/manuscript-router.js');
 const authRouter = require('./route/auth-router.js');
 const publisherRouter = require('./route/publisher-router.js');
 const errors = require('./lib/error-middleware.js');
@@ -22,6 +23,7 @@ mongoose.connect(process.env.MONGODB_URI);
 app.use(cors());
 app.use(morgan('dev'));
 
+app.use(manuscriptRouter);
 app.use(authRouter);
 app.use(publisherRouter);
 app.use(errors);
