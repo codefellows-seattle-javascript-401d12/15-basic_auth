@@ -24,14 +24,14 @@ albumRouter.post('/api/album', bearerAuth, jsonParser, function(req, res, next){
   .catch(next);
 });
 
-albumRouter.get('/api/album', bearerAuth, jsonParser, function(req, res, next){
-  debug('GET: /api/album');
+albumRouter.get('/api/album/:id', bearerAuth, jsonParser, function(req, res, next){
+  debug('GET: /api/album/:id');
 
   req.body.userID = req.user._id;
 
   if(!req.body.userID) return next(createError(400, 'bad request \n token required'));
 
-  Album.findOne({ _id: req.body.id})
+  Album.findOne({ _id: req.params.id})
   .then( album => {
     if(!album) return next(createError(404, 'not found'));
 
@@ -57,14 +57,14 @@ albumRouter.put('/api/album', bearerAuth, jsonParser, function(req, res, next){
   .catch(next);
 });
 
-albumRouter.delete('/api/album', bearerAuth, jsonParser, function(req, res, next){
+albumRouter.delete('/api/album/:id', bearerAuth, jsonParser, function(req, res, next){
   debug('DELETE: /api/album');
 
   req.body.userID = req.user._id;
 
   if(!req.body.userID) return next(createError(400, 'bad request \n token required'));
 
-  Album.findByIdAndRemove(req.body.id)
+  Album.findByIdAndRemove(req.params.id)
   .then( () => {
     var response = {
       id: req.body.id,
