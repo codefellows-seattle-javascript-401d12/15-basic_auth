@@ -27,6 +27,15 @@ function s3uploadProm(params) {
   });
 }
 
+function s3fetchProm(params) {
+  return new Promise((resolve, reject) => {
+    s3.getObject(params, (err, response) => {
+      if (err) return reject(err);
+      resolve(response);
+    });
+  });
+}
+
 assignmentRouter.post('/api/student/:studentID/assignment', bearAuth, upload.single('text assignment'), function(request, response, next) {
   debug('POST: /api/student/:studentID/assignment');
 
@@ -57,5 +66,20 @@ assignmentRouter.post('/api/student/:studentID/assignment', bearAuth, upload.sin
     return new Assignment(assignmentText).save();
   })
   .then(assignment => response.json(assignment))
+  .catch(err => next(err));
+});
+
+assignmentRouter.get('/api/assignment/:assignmentID', bearAuth, function(request, response, next) {
+  debug('GET: /api/assignment/:assignmentID');
+
+  Assignment.findById(request.params.assignmentID)
+  .then(assignment => {
+    let params = {
+      Bucket: process.env.AWS_BUCKET,
+      Key: assignment.objectKey
+    };
+    s3fetchProm(params);
+  })
+  .then(assignmentData => response.json(assignmentData))
   .catch(err => next(err));
 });
