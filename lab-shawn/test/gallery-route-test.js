@@ -295,6 +295,133 @@ describe('Gallery Routes', function(){
         })
       })
     });
+
+    describe('with a valid body', () => {
+      before(done => {
+        new User(exampleUser)
+        .generatePasswordHash(exampleUser.password)
+        .then(user => user.save())
+        .then(user => {
+          this.tempUser = user;
+          return user.generateToken()
+        })
+        .then(token => {
+          this.tempToken = token;
+          done();
+        })
+        .catch(done);
+      });
+      before(done => {
+        exampleGallery.userID = this.tempUser._id.toString();
+        new Gallery(exampleGallery).save()
+        .then(gallery => {
+          this.tempGallery = gallery;
+          done();
+        })
+        .catch(done);
+      });
+      after(() => {
+        delete exampleGallery.userID;
+      });
+      it('should return not found', done => {
+        var updated = {name: 'new name'}
+        request.put(`${url}/api/gallery/586d54417908e626fd678293`)
+        .set({
+          Authorization: `Bearer ${this.tempToken}`
+        })
+        .send(updated)
+        .end(res => {
+          expect(res.status).to.equal(404);
+          done();
+        })
+
+      });
+    });
+
+    describe('with an invalid body', () => {
+      before(done => {
+        new User(exampleUser)
+        .generatePasswordHash(exampleUser.password)
+        .then(user => user.save())
+        .then(user => {
+          this.tempUser = user;
+          return user.generateToken()
+        })
+        .then(token => {
+          this.tempToken = token;
+          done();
+        })
+        .catch(done)
+      });
+      before(done => {
+        exampleGallery.userID = this.tempUser._id.toString();
+        new Gallery(exampleGallery).save()
+        .then(gallery => {
+          this.tempGallery = gallery;
+          done();
+        })
+        .catch(done);
+      });
+      after(() => {
+        delete exampleGallery.userID;
+      });
+      it('should return bad request', done => {
+        var updated = { test: 'test'};
+        request.put(`${url}/api/gallery/${this.tempGallery._id}`)
+        .set({
+          Authorization: `Bearer ${this.tempToken}`
+        })
+        .send(updated)
+        .end(res => {
+          // let date = new Date(res.body.created).toString();
+          expect(res.status).to.equal(400);
+          done();
+        })
+
+      });
+    });
+
+    describe('without a token', () => {
+      before(done => {
+        new User(exampleUser)
+        .generatePasswordHash(exampleUser.password)
+        .then(user => user.save())
+        .then(user => {
+          this.tempUser = user;
+          return user.generateToken();
+        })
+        .then(token => {
+          this.tempToken = token;
+          done();
+        })
+        .catch(done);
+      });
+      before(done => {
+        exampleGallery.userID = this.tempUser._id.toString();
+        new Gallery(exampleGallery).save()
+        .then(gallery => {
+          this.tempGallery = gallery;
+          done();
+        })
+        .catch(done);
+      })
+      after(() => {
+        delete exampleGallery.userID;
+      });
+      it('should return authorization error', done => {
+        var updated = {name: 'new name'}
+
+        request.put(`${url}/api/gallery/${this.tempGallery._id}`)
+        .set({
+          Authorization: `Bearer `
+        })
+        .send(updated)
+        .end(res => {
+          expect(res.status).to.equal(401);
+          done();
+        });
+      });
+    });
   });
 
   describe('DELETE: /api/gallery/:id', () => {
