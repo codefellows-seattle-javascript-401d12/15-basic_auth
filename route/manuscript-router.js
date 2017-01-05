@@ -22,6 +22,7 @@ const upload = multer({dest: dataDir});
 const manuscriptRouter = module.exports = Router();
 
 function s3uploadProm(params) {
+  console.log(s3uploadProm);
   return new Promise((resolve, reject) => {
     s3.upload(params, (err, s3data) => {
       if (err) return reject(err);
@@ -30,7 +31,7 @@ function s3uploadProm(params) {
   });
 }
 
-manuscriptRouter.post('/api/publisher/:publisherID/manuscript', bearerAuth, upload.single('text'), function(req, res, next) {
+manuscriptRouter.post('/api/publisher/:publisherID/manuscript', bearerAuth, upload.single('doc'), function(req, res, next) {
   debug('POST: /api/publisher/:publisherID/manuscript');
 
   if (!req.file) {
@@ -50,7 +51,7 @@ manuscriptRouter.post('/api/publisher/:publisherID/manuscript', bearerAuth, uplo
     Body: fs.createReadStream(req.file.path)
   };
 
-  Manuscript.findById(req.params.manuscriptID)
+  Publisher.findById(req.params.publisherID)
   .then(() => s3uploadProm(params))
   .then(s3data => {
     del([`${dataDir}/*`]);
@@ -60,7 +61,7 @@ manuscriptRouter.post('/api/publisher/:publisherID/manuscript', bearerAuth, uplo
       objectKey: s3data.Key,
       docURI: s3data.Location,
       userID: req.user._id,
-      manuscriptID: req.params.manuscriptID
+      publisherID: req.params.publisherID
     };
     return new Manuscript(manuscriptData).save();
   })
@@ -68,18 +69,18 @@ manuscriptRouter.post('/api/publisher/:publisherID/manuscript', bearerAuth, uplo
   .catch(err => next(err));
 });
 
-manuscriptRouter.delete('/api/publisher/:publisherID/manuscript/:manuscriptID', bearerAuth, function(req, res, next) {
-  debug('DELETE: /api/publisher/:publisherID/manuscript/:manuscriptID');
-
-  let ext = path.extname(req.file.originalname);
-
-  let params = {
-    Bucket: process.env.AWS_BUCKET,
-    Key: `${req.file.filename}${ext}`,
-  };
-
-  Manuscript.findByIdAndRemove(req.params.manuscriptID)
-  .then(() => s3.deleteObject(params))
-  .then(() => res.status(204).send())
-  .catch(err => next(err));
-});
+// manuscriptRouter.delete('/api/publisher/:publisherID/manuscript/:manuscriptID', bearerAuth, function(req, res, next) {
+//   debug('DELETE: /api/publisher/:publisherID/manuscript/:manuscriptID');
+//
+//   let ext = path.extname(req.file.originalname);
+//
+//   let params = {
+//     Bucket: process.env.AWS_BUCKET,
+//     Key: `${req.file.filename}${ext}`,
+//   };
+//
+//   Manuscript.findByIdAndRemove(req.params.manuscriptID)
+//   .then(() => s3.deleteObject(params))
+//   .then(() => res.status(204).send())
+//   .catch(err => next(err));
+// });

@@ -84,7 +84,7 @@ describe('Manuscript Routes', function() {
         done();
       });
 
-      it('should return a txt file', done => {
+      it.only('should return a txt file', done => {
         request.post(`${url}/api/publisher/${this.tempPublisher._id}/manuscript`)
         .set({
           Authorization: `Bearer ${this.tempToken}`
@@ -97,7 +97,7 @@ describe('Manuscript Routes', function() {
           expect(res.status).to.equal(200);
           expect(res.body.name).to.equal(testManuscript.name);
           expect(res.body.desc).to.equal(testManuscript.desc);
-          expect(res.body.publisherID).to.equal(this.temtempPublisher._id.toString());
+          expect(res.body.publisherID).to.equal(this.tempPublisher._id.toString());
           done();
         });
       });
