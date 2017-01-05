@@ -25,4 +25,4 @@ const server = module.exports = app.listen(process.env.PORT, function() {
   debug(`Server started on port ${process.env.PORT}`);
 });
 
-server.on = true;
+server.running = true;

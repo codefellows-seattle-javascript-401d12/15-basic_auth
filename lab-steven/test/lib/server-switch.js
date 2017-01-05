@@ -5,10 +5,10 @@ const debug = require('debug')('photogram:server switch');
 module.exports = exports = {};
 
 exports.startServer = function(server, done) {
-  if (!server.on) {
+  if (!server.running) {
     server.listen(process.env.PORT, () => {
       debug(`Server running on port ${process.env.PORT}.`);
-      server.on = true;
+      server.running = true;
       done();
     });
     return;
@@ -17,11 +17,11 @@ exports.startServer = function(server, done) {
 };
 
 exports.stopServer = function(server, done) {
-  if (server.on) {
+  if (server.running) {
     server.close(err => {
       if (err) return done(err);
       debug('Server stopped.');
-      server.on = false;
+      server.running = false;
       done();
     });
     return;
