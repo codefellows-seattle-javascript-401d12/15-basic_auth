@@ -40,7 +40,7 @@ describe('Auth Routes', function() {
     });
 
     describe('invalid POST route', function() {
-      it('should return a 404 code', done => {
+      it('should return a 404 not found error', done => {
         request.post(`${url}/api/invalid`)
         .send(exampleUser)
         .end((err, res) => {
@@ -97,7 +97,7 @@ describe('Auth Routes', function() {
     });
 
     describe('with an invalid password', function() {
-      it('should return a 401', done => {
+      it('should return a 401 unauthorized error', done => {
         request.get(`${url}/api/signin`)
         .auth('exampleUser', '9876')
         .end((err, res) => {
@@ -109,7 +109,7 @@ describe('Auth Routes', function() {
     });
 
     describe('invalid GET route', function() {
-      it('should return a 404', done => {
+      it('should return a 404 not found error', done => {
         request.get(`${url}/api/invalid`)
         .end((err, res) => {
           expect(err).to.be.an('error');
