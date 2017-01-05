@@ -2,7 +2,7 @@
 
 const expect = require('chai').expect;
 const request = require('superagent');
-const debug = require('debug')('cfgram:pic-router-test');
+// const debug = require('debug')('cfgram:pic-router-test');
 
 const Image = require('../model/image.js');
 const User = require('../model/user.js');
@@ -81,7 +81,7 @@ describe('Pic Routes', function() {
         done();
       });
 
-      it('should return a pic', done => {
+      it.only('should return a pic', done => {
         request.post(`${url}/api/vault/${this.tempVault._id}/image`)
         .set({
           Authorization: `Bearer ${this.tempToken}`

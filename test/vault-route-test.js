@@ -212,7 +212,7 @@ describe('Vault Routes', function() {
         done();
       });
     });
-    it.only('should throw a 400 if body is invalid', done => {
+    it('should throw a 400 if body is invalid', done => {
       request.put(`${url}/api/vault/${this.tempVault._id}`)
       .set({
         Authorization: `Bearer ${this.tempToken}`

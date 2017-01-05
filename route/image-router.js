@@ -7,13 +7,13 @@ const AWS = require('aws-sdk');
 const multer = require('multer');
 const Router = require('express').Router;
 const createError = require('http-errors');
-const debug = require('debug')('cfgram-image-router');
+const debug = require('debug')('cfgram:image-router');
 
 const Image = require('../model/image.js');
 const Vault = require('../model/vault.js');
 const bearerAuth = require('../lib/bearer-auth-middleware.js');
 
-AWS.config.setPromisiesDependency(require('blusebird'));
+AWS.config.setPromisesDependency(require('bluebird'));
 
 const s3 = new AWS.S3();
 const dataDir = `${__dirname}/../data`;
@@ -23,8 +23,9 @@ const imageRouter = module.exports = Router();
 
 function s3uploadProm(params) {
   return new Promise((resolve, reject) => {
+
     s3.upload(params, (err, s3data) => {
-      if (err) return reject (err);
+      if (err) return reject (err); 
       resolve(s3data);
     });
   });
@@ -53,10 +54,10 @@ imageRouter.post('/api/vault/:vaultID/image', bearerAuth, upload.single('image')
   Vault.findById(req.params.vaultID)
   .then( () => s3uploadProm(params))
   .then( s3data => {
-    del(`[${dataDir}/*]`);
+    del([`${dataDir}/*`]);
     let imageData = {
       name: req.body.name,
-      desc: req.body.description,
+      desc: req.body.desc,
       objectKey: s3data.Key,
       imageURI: s3data.Location,
       userID: req.user._id,
