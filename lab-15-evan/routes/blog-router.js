@@ -23,7 +23,7 @@ blogRouter.get('/api/blog/:id', bearerAuth,  function(req, res, next) {
   debug('GET: /api/blog/:id');
 
   if(req.params.id === null || req.params.id === undefined) {
-    return createError(400, err.message);
+    return createError(400, 'Bad request');
   }
   Blog.findById(req.params.id)
   .then( blog => {
