@@ -24,13 +24,16 @@ const photoRouter = module.exports = Router();
 function s3uploadProm(params) {
   return new Promise((resolve, reject) => {
     s3.upload(params, (err, s3data) => {
+      console.log(err);
+      if(err) return reject(err);
       resolve(s3data);
     });
   });
 }
 
-photoRouter.post('/api/photo/:photoID/photo', bearerAuth, upload.single('image', function(req, res, next) {
+photoRouter.post('/api/album/:albumID/photo', bearerAuth, upload.single('image'), function(req, res, next) {
   debug('POST /api/album/:albumID/photo');
+  console.log('::: reached inside photoRouter POST');
 
   if(!req.file) {
     return next(createError(400, 'file not found'));
@@ -46,12 +49,13 @@ photoRouter.post('/api/photo/:photoID/photo', bearerAuth, upload.single('image',
     ACL: 'public-read',
     Bucket: process.env.AWS_BUCKET,
     Key: `${req.file.filename}${ext}`,
-    body: fs.createREadStream(req.file.path)
+    Body: fs.createReadStream(req.file.path)
   };
 
-  Album.findById(req.params.galleryID)
+  Album.findById(req.params.albumID)
   .then( () => s3uploadProm(params))
   .then( s3data => {
+    console.log('::: s3 data is', s3data);
     del([`${dataDir}/*`]);
     let photoData = {
       name: req.body.name,
@@ -59,10 +63,10 @@ photoRouter.post('/api/photo/:photoID/photo', bearerAuth, upload.single('image',
       objectKey: s3data.Key,
       imageURI: s3data.Location,
       userID: req.user._id,
-      galleryID: req.params.galleryID
+      albumID: req.params.albumID
     };
     return new Photo(photoData).save();
   })
   .then( photo => res.json(photo))
   .catch( err => next(err));
-}));
+});

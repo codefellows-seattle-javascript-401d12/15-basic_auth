@@ -12,6 +12,7 @@ const serverToggle = require('./lib/server-toggle.js');
 const server = require('../server.js');
 
 const url = `http://localhost:${process.env.PORT}`;
+console.log(process.env.PORT);
 
 const exampleUser = {
   username: 'example user name',
@@ -83,6 +84,8 @@ describe('Photo Routes', function () {
       });
 
       it.only('should return a photo', done => {
+        console.log('::: inside of PUT test');
+        console.log(this.tempAlbum._id);
         request.post(`${url}/api/album/${this.tempAlbum._id}/photo`)
         .set({
           Authorization: `Bearer ${this.tempToken}`
@@ -91,7 +94,13 @@ describe('Photo Routes', function () {
         .field('description', examplePhoto.description)
         .attach('image', examplePhoto.image)
         .end((err, res) => {
+          console.log(err);
           if (err) return done(err);
+          console.log('\n\n');
+          console.log('::: res.body.name is', res.body.name);
+          console.log('::: res.body.description is', res.body.description);
+          console.log('::: res.body.albumID is', res.body.albumID);
+          console.log('\n\n');
           expect(res.body.name).to.equal(examplePhoto.name);
           expect(res.body.description).to.equal(examplePhoto.description);
           expect(res.body.albumID).to.equal(this.tempAlbum._id.toString());
