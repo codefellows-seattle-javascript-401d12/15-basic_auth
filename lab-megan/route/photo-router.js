@@ -69,23 +69,23 @@ photoRouter.post('/api/album/:albumID/photo', bearerAuth, upload.single('image')
   .catch( err => next(err));
 });
 
-photoRouter.delete('/api/album/:albumID/photo/photoID', bearerAuth, function(req, res, next) {
+photoRouter.delete('/api/album/:albumID/photo/:photoID', bearerAuth, function(req, res, next) {
   debug('DELETE /api/album/:albumID/photo/photoIDs');
-  console.log('::: reached inside of photo router delete block');
+  console.log('\n\n::: reached inside of photo router delete block\n\n');
 
-  if(!req.file) {
-    return next(createError(400, 'file not found'));
-  }
-
-  if (!req.file.path) {
-    return next(createError(500, 'file not saved'));
-  }
+  // if(!req.file) {
+  //   return next(createError(400, 'file not found'));
+  // }
+  //
+  // if (!req.file.path) {
+  //   return next(createError(500, 'file not saved'));
+  // }
 
   // delete from s3 Bucket
 
   // let ext = path.extname(req.file.originalname);
 
-  console.log('::: params are:', params);
+  // console.log('::: params are:', params);
   let params = {
     // ACL: 'public-read',
     Bucket: process.env.AWS_BUCKET,
