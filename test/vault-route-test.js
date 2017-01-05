@@ -117,7 +117,7 @@ describe('Vault Routes', function() {
     });
 
     after( () => {
-      delete exampleVault.user.ID;
+      delete exampleVault.userID;
     });
 
     it('should return a vault', done => {
@@ -128,10 +128,35 @@ describe('Vault Routes', function() {
       .end((err, res) => {
         if (err) return done(err);
         let date = new Date(res.body.created).toString();
+        expect(res.status).to.equal(200);
         expect(res.body.name).to.equal(exampleVault.name);
         expect(res.body.desc).to.equal(exampleVault.desc);
-        expect(res.body.userID).to.equal(this.tempUser._id).toString();
+        expect(res.body.userID).to.equal(this.tempUser._id.toString());
         expect(date).to.not.equal('Invalid Date');
+        done();
+      });
+    });
+
+    it('should throw a 401 if no token provided', done => {
+      request.get(`${url}/api/vault/${this.tempVault._id}`)
+      .set({
+        Authorization: 'Bearer'
+      })
+      .end((err, res) => {
+        expect(res.status).to.equal(401);
+        expect(err).to.be.an('error');
+        done();
+      });
+    });
+
+    it('should throw a 404 if id not found', done => {
+      request.get(`${url}/api/vault/`)
+      .set({
+        Authorization: `Bearer ${this.tempToken}`
+      })
+      .end((err, res) => {
+        expect(res.status).to.equal(404);
+        expect(err).to.be.an('error');
         done();
       });
     });
