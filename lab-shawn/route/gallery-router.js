@@ -17,7 +17,7 @@ galleryRouter.post('/api/gallery', bearerAuth, jsonParser, function(req,res,next
   new Gallery(req.body).save()
   .then(gallery => {
     if(!req.body.name) return next(createError(400, 'body required'));
-    res.json(gallery)
+    res.json(gallery);
   })
   .catch(next);
 });
@@ -48,12 +48,12 @@ galleryRouter.put('/api/gallery/:id', bearerAuth, jsonParser, function(req,res,n
     //   return  next(createError(401,'invalid user'));
     // }
     if(gallery === null) return next(createError(404,'not found'));
-    res.json(gallery)
+    res.json(gallery);
   })
   .catch(err => next(createError(404,err.message)));
 });
 
-galleryRouter.delete('/api/gallery/:id', function(req,res,next){
+galleryRouter.delete('/api/gallery/:id', bearerAuth, function(req,res,next){
   debug('DELETE: /api/gallery/:id');
 
   Gallery.findByIdAndRemove(req.params.id)
