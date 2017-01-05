@@ -29,3 +29,41 @@ function s3uploadProm(params) {
     });
   });
 }
+
+manuscriptRouter.post('/api/publisher/:publisherID/manuscript', bearerAuth, upload.single('text'), function(req, res, next) {
+  debug('POST: /api/publisher/:publisherID/manuscript');
+
+  if (!req.file) {
+    return next(createError(401, 'file not found'));
+  }
+
+  if (!req.file.path) {
+    return next(createError(500, 'file not saved'));
+  }
+
+  let ext = path.extname(req.file.originalname);
+
+  let params = {
+    ACL: 'public-read',
+    Bucket: process.env.AWS_BUCKET,
+    Key: `${req.file.filename}${ext}`,
+    Body: fs.createReadStream(req.file.path)
+  };
+
+  Manuscript.findById(req.params.manuscriptID)
+  .then(() => s3uploadProm(params))
+  .then(s3data => {
+    del([`${dataDir}/*`]);
+    let manuscriptData = {
+      name: req.body.name,
+      desc: req.body.desc,
+      objectKey: s3data.Key,
+      imageURI: s3data.Location,
+      userID: req.user._id,
+      manuscriptID: req.params.manuscriptID
+    };
+    return new Manuscript(manuscriptData).save();
+  })
+  .then(manuscript => res.json(manuscript))
+  .catch(err => next(err));
+});
