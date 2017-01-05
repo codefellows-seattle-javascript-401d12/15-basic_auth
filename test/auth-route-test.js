@@ -27,7 +27,7 @@ describe('Auth Routes', function() {
   after( done => {
     serverToggle.serverOff(server, done);
   });
-  
+
   describe('POST: /api/signup', function() {
     describe('with a valid body', function() {
       after( done => {

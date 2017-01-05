@@ -14,7 +14,7 @@ const server = require('../server.js');
 const url = `http://localhost:${process.env.PORT}`;
 
 const exampleUser = {
-  username: 'exampleuser',
+  username: 'exampleName',
   password: '1234',
   email: 'exampleuser@test.com'
 };
@@ -44,13 +44,21 @@ describe('Pic Routes', function() {
       User.remove({}),
       Gallery.remove({})
     ])
-    .then( () => done())
+    .then( () => {
+      console.log('afterEach');
+      done();
+    })
     .catch(done);
   });
+
   describe('POST: /api/gallery/:galleryID/pic', function() {
     describe('with a valid token and valid data', function() {
       before( done => {
-        new User(exampleUser)
+        new User ({
+          username: 'blah',
+          password: '1234',
+          email: 'exampleuser@test.com'
+        })
         .generatePasswordHash(exampleUser.password)
         .then( user => user.save())
         .then( user => {
@@ -89,6 +97,58 @@ describe('Pic Routes', function() {
           expect(res.body.name).to.equal(examplePic.name);
           expect(res.body.desc).to.equal(examplePic.desc);
           expect(res.body.galleryID).to.equal(this.tempGallery._id.toString());
+          done();
+        });
+      });
+    });
+  });
+  describe('DELETE: /api/gallery/:galleryID/pic/:picID', function() {
+    describe('with a valid id', function() {
+      before( done => {
+        new User ({
+          username: 'blerg',
+          password: '1234',
+          email: 'exampleuser@test.com'
+        })
+        .generatePasswordHash(exampleUser.password)
+        .then( user => user.save())
+        .then( user => {
+          this.tempUser = user;
+          return user.generateToken();
+        })
+        .then( token => {
+          this.tempToken = token;
+          done();
+        })
+        .catch(done);
+      });
+      before( done => {
+        exampleGallery.userID = this.tempUser._id.toString();
+        new Gallery(exampleGallery).save()
+        .then( gallery => {
+          this.tempGallery = gallery;
+          done();
+        })
+        .catch(done);
+      });
+      before( done => {
+        examplePic.userID = this.tempUser._id.toString();
+        new Pic(examplePic).save()
+        .then( pic => {
+          this.tempPic = pic;
+          done();
+        })
+        .catch(done);
+      });
+      it('should delete a pic', done => {
+        request.delete(`${url}/api/gallery/${this.tempGallery._id}/pic/${this.tempPic._id}`)
+        .set({
+          Authorization: `Bearer ${this.tempToken}`
+        })
+        .send({Bucket: process.env.AWS_BUCKET, Key: this.tempPic.objectKey})
+        .end((err, res) =>{
+          if(err) return done(err);
+          expect(res.status).to.equal(204);
           done();
         });
       });

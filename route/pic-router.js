@@ -30,6 +30,15 @@ function s3uploadProm(params) {
   });
 };
 
+function s3deleteProm(params) {
+  return new Promise((resolve, reject) => {
+    s3.deleteObject(params, (err, s3data) => {
+      if(err) return reject(err);
+      resolve(s3data);
+    });
+  });
+};
+
 picRouter.post('/api/gallery/:galleryID/pic', bearerAuth, upload.single('image'), function(req, res, next) {
   debug('POST: /api/gallery/:galleryID/pic');
 
@@ -68,4 +77,21 @@ picRouter.post('/api/gallery/:galleryID/pic', bearerAuth, upload.single('image')
   .catch( err => next(err));
 });
 
-// picRouter.delete('/api/gallery/:galleryID/pic/:picID', bearerAuth, )
+picRouter.delete('/api/gallery/:galleryID/pic/:picID', bearerAuth, function(req, res, next) {
+  debug('DELETE: /api/gallery/:galleryID/pic/:picID');
+
+  let ext = path.extname(req.file.originalname);
+
+  let params = {
+    Bucket: process.env.AWS_BUCKET,
+    Key: `${req.file.filename}${ext}`
+  };
+
+  Pic.findByIdAndRemove(req.params.id)
+  .then( () => s3deleteProm(params))
+  .then( () => {
+    del([`${dataDir}/*`]);
+  })
+  .then( () => res.status(204).send())
+  .catch( err => next(err));
+});
