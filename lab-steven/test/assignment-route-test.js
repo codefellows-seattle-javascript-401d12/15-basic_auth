@@ -6,7 +6,6 @@ const mongoose = require('mongoose');
 const Promise = require('bluebird');
 const User = require('../model/user.js');
 const Student = require('../model/student.js');
-const Assignment = require('../model/assignment.js');
 const server = require('../server.js');
 const serverSwitch = require('./lib/server-switch.js');
 const url = `http://localhost:${process.env.PORT}`;
@@ -42,8 +41,7 @@ describe('Assignment routes', function() {
   after(done => {
     Promise.all([
       User.remove({}),
-      Student.remove({}),
-      Assignment.remove({})
+      Student.remove({})
     ])
     .then(() => done())
     .catch(done);
