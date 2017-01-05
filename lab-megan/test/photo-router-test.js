@@ -51,8 +51,14 @@ describe('Photo Routes', function () {
     .catch(done);
   });
 
+  // ----------
+  // POST tests
+  // ----------
+
   describe('POST: /api/album/:id/photo', function() {
+
     describe('with a valid token and valid data', function() {
+
       beforeEach( done => {
         new User(exampleUser)
         .generatePasswordHash(exampleUser.password)
@@ -83,9 +89,7 @@ describe('Photo Routes', function () {
         done();
       });
 
-      it.only('should return a photo', done => {
-        console.log('::: inside of PUT test');
-        console.log(this.tempAlbum._id);
+      it('should return a photo', done => {
         request.post(`${url}/api/album/${this.tempAlbum._id}/photo`)
         .set({
           Authorization: `Bearer ${this.tempToken}`
@@ -94,19 +98,96 @@ describe('Photo Routes', function () {
         .field('description', examplePhoto.description)
         .attach('image', examplePhoto.image)
         .end((err, res) => {
-          console.log(err);
+          // console.log(err);
           if (err) return done(err);
-          console.log('\n\n');
-          console.log('::: res.body.name is', res.body.name);
-          console.log('::: res.body.description is', res.body.description);
-          console.log('::: res.body.albumID is', res.body.albumID);
-          console.log('\n\n');
           expect(res.body.name).to.equal(examplePhoto.name);
           expect(res.body.description).to.equal(examplePhoto.description);
           expect(res.body.albumID).to.equal(this.tempAlbum._id.toString());
           done();
         });
       });
+
     });
   });
+
+  // -----------
+  // DELETE test
+  // -----------
+
+  describe('DELETE: /api/album/:id/photo/photoid', function() {
+
+    describe('with a valid token and valid data', function() {
+
+      beforeEach( done => {
+        new User(exampleUser)
+        .generatePasswordHash(exampleUser.password)
+        .then( user => user.save())
+        .then( user => {
+          this.tempUser = user;
+          return user.generateToken();
+        })
+        .then( token => {
+          this.tempToken = token;
+          done();
+        })
+        .catch(done);
+      });
+
+      beforeEach( done => {
+        exampleAlbum.userID = this.tempUser._id.toString();
+        new Album(exampleAlbum).save()
+        .then( album => {
+          this.tempAlbum = album;
+          done();
+        })
+        .catch(done);
+      });
+
+      // TODO: beforeeach - create image
+
+      beforeEach( done => {
+        examplePhoto.userID = this.tempUser._id.toString();
+        new Photo(examplePhoto).save()
+        .then( photo => {
+          this.tempPhoto = photo;
+          done();
+        })
+        .catch(done);
+      });
+
+      afterEach( done => {
+        delete exampleAlbum.userID;
+        delete examplePhoto.userID;
+        done();
+      });
+
+      it.only('should delete a photo', done => {
+        console.log('\n\n');
+        console.log('::: this.tempAlbum._id is', this.tempAlbum._id);
+        console.log('::: delete request will be:', `${url}/api/album/${this.tempAlbum._id}/photo`);
+        // console.log('::: this.tempPhoto._id is', this.tempPhoto._id);
+        // console.log(`${url}/api/album/${this.tempAlbum._id}/photo`);
+        console.log('\n\n');
+        request.delete(`${url}/api/album/${this.tempAlbum._id}/photo`)
+        .set({
+          Authorization: `Bearer ${this.tempToken}`
+        })
+        // .field('name', examplePhoto.name)
+        // .field('description', examplePhoto.description)
+        // .attach('image', examplePhoto.image)
+        .end((err, res) => {
+          // console.log(err);
+          if (err) return done(err);
+          expect(res.status).to.equal(204);
+          expect(res.body).to.be.empty;
+          // expect(res.body.name).to.equal(examplePhoto.name);
+          // expect(res.body.description).to.equal(examplePhoto.description);
+          // expect(res.body.albumID).to.equal(this.tempAlbum._id.toString());
+          done();
+        });
+      });
+
+    });
+  });
+
 });
