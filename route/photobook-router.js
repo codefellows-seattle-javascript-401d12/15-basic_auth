@@ -32,18 +32,18 @@ photobookRouter.get('/api/photobook/:id', bearerAuth, function(req, res, next) {
   .catch(err => next(createError(404, err.message)));
 });
 
-photobookRouter.delete('/api/photobook/:id', bearerAuth, function(req, res, next) {
-  debug('DELETE: /api/photobook/:id');
-
-  Photobook.findByIdAndRemove(req.params.id)
-  .then(() => res.status(204).send('deleted photobook'))
-  .catch(err => next(createError(404, err.message)));
-});
-
 photobookRouter.put('/api/photobook/:id', bearerAuth, jsonParser, function(req, res, next) {
   debug('PUT: /api/photobook/:id');
 
   Photobook.findByIdAndUpdate(req.params.id, req.body, {new: true})
   .then( photobook => res.json(photobook))
+  .catch(err => next(createError(404, err.message)));
+});
+
+photobookRouter.delete('/api/photobook/:id', bearerAuth, function(req, res, next) {
+  debug('DELETE: /api/photobook/:id');
+
+  Photobook.findByIdAndRemove(req.params.id)
+  .then(() => res.status(204).send('deleted photobook'))
   .catch(err => next(createError(404, err.message)));
 });
