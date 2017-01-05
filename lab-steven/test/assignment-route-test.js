@@ -82,7 +82,7 @@ describe('Assignment routes', function() {
         .set({authorization: `Bearer ${this.tempToken}`})
         .field('name', sampleAssignment.name)
         .field('details', sampleAssignment.details)
-        .attach('text', sampleAssignment.text)
+        .attach('text assignment', sampleAssignment.text)
         .end((err, response) => {
           if (err) return done(err);
           expect(response.body.name).to.equal(sampleAssignment.name);

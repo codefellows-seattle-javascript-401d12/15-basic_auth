@@ -41,8 +41,7 @@ assignmentRouter.post('/api/student/:studentID/assignment', bearAuth, upload.sin
 
   if (!request.file) return next(createError(400, 'No file provided'));
   if (!request.file.path) return next(createError(500, 'File not saved.'));
-
-  let ext = path.extname(path.file.originalname);
+  let ext = path.extname(request.file.originalname);
 
   let params = {
     ACL: 'public-read',
@@ -50,6 +49,7 @@ assignmentRouter.post('/api/student/:studentID/assignment', bearAuth, upload.sin
     Key: `${request.file.filename}${ext}`,
     Body: fs.createReadStream(request.file.path)
   };
+
 
   Student.findById(request.params.studentID)
   .then(() => s3uploadProm(params))
