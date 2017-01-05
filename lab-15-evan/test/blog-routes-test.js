@@ -378,14 +378,9 @@ describe('Blog Routes', function() {
   //     delete exampleBlog.memberID;
   //   });
   //
-  //   it('should return an updated blog', done => {
-  //     let updatedBlog = {
-  //       nam: 'updatedBlogName',
-  //       topi: 'updatedBlogTopic',
-  //       des: 'updatedBlogDescription'
-  //     };
+  //   it('should respond with a 400', done => {
   //     request.put(`${url}/api/blog/${this.tempBlog._id}`)
-  //     .send(updatedBlog)
+  //     .send(null)
   //     .set({
   //       Authorization: `Bearer ${this.tempToken}`
   //     })

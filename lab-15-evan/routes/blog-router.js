@@ -23,7 +23,7 @@ blogRouter.get('/api/blog/:id', bearerAuth,  function(req, res, next) {
   debug('GET: /api/blog/:id');
 
   if(req.params.id === null || req.params.id === undefined) {
-    return createError(400, 'Bad request');
+    return next(createError(400, 'Bad request'));
   }
   Blog.findById(req.params.id)
   .then( blog => {
@@ -38,6 +38,9 @@ blogRouter.get('/api/blog/:id', bearerAuth,  function(req, res, next) {
 blogRouter.put('/api/blog/:id', bearerAuth, jsonParser, function(req, res, next) {
   debug('PUT: /api/blog/:id');
 
+  if(req.body === null || req.body === undefined) {
+    return next(createError(400, 'Bad request'));
+  }
   Blog.findByIdAndUpdate(req.params.id, req.body, { new: true })
   .then( blog => {
     if(blog.memberID.toString() !== req.member._id.toString()) {
