@@ -30,7 +30,7 @@ const exampleImage = {
   image: `${__dirname}/data/test.png`
 };
 
-describe('Pic Routes', function() {
+describe('Image Routes', function() {
   before( done => {
     serverToggle.serverOn(server, done);
   });
@@ -100,19 +100,19 @@ describe('Pic Routes', function() {
     });
   });
 
-  describe('DELETE:', function() {
-    describe('with a vaild id', function() {
-      it.only('should delete and return 204', done => {
-        request.delete(`${url}/api/image/${this.tempImage._id}`)
-        .set({
-          Authorization: `Bearer ${this.tempToken}`
-        })
-        .end((err, res) => {
-          if(err) return done(err);
-          expect(res.status).to.equal(204);
-          done();
-        });
-      });
-    });
-  });
+  // describe('DELETE:', function() {
+  //   describe('with a vaild id', function() {
+  //     it.only('should delete and return 204', done => {
+  //       request.delete(`${url}/api/image/${this.tempImage._id}`)
+  //       .set({
+  //         Authorization: `Bearer ${this.tempToken}`
+  //       })
+  //       .end((err, res) => {
+  //         if(err) return done(err);
+  //         expect(res.status).to.equal(204);
+  //         done();
+  //       });
+  //     });
+  //   });
+  // });
 });
