@@ -50,7 +50,6 @@ assignmentRouter.post('/api/student/:studentID/assignment', bearAuth, upload.sin
     Body: fs.createReadStream(request.file.path)
   };
 
-
   Student.findById(request.params.studentID)
   .then(() => s3uploadProm(params))
   .then(response => {
