@@ -170,7 +170,7 @@ ETag: W/"11-3pphLxOhDYpB51tvzh8yow"
 X-Powered-By: Express
 ```
 
-3. If you make another GET request to this particular id param, you will get a `404` status code, like this example:
+If you make another GET request to this particular id param, you will get a `404` status code, like this example:
 
 ``` javascript
 HTTP/1.1 404 Not Found
@@ -184,3 +184,16 @@ X-Powered-By: Express
 
 NotFoundError
 ```
+
+## Pic
+### Test the API (POST)
+
+To test the API (POST), you may enter the following into your terminal:
+
+`http --form localhost:8000/api/photobook/:photobookID/pic Authorization:"Bearer <token>" name="meow" desc="test" pic@<imagePath>`
+
+### Test the API (DELETE)
+
+To test the API (DELETE), you may enter the following into your terminal:
+
+`http DELETE localhost:8000/api/photobook/:photobookID/pic/:picID Authorization:"Bearer <token>"`
