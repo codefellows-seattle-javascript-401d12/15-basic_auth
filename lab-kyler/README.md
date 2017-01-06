@@ -9,6 +9,10 @@
     * `http get localhost:<port>/api/signin -a <username>:<password>`
   * Signed in users can store a joke and a "mature content" flag, with a POST to /api/joke:
     * `http post localhost:<port>/api/joke authorization='Bearer <auth token>' setup=<setup> punchline=<punchline> mature=<boolean>`
+  * Signed in users can store a .mp4 video, with a multipart POST to /api/vid:
+    * `http --form localhost:<port>/api/vid authorization='Bearer <auth token>' name=<name> desc=<desc> image@<imagePath>`
+  * Signed in users can delete a .mp4 video, with a DELETE to /api/vid:
+    * `http delete localhost:<port>/api/vid/<vidID> authorization='Bearer <auth token>'`
   * Signed in users can retrieve a joke with a GET to /api/joke:
     * `http get localhost:<port>/api/joke/<jokeID> authorization='Bearer <auth token>'`
   * Signed in users can update arbitrary joke properties (all are optional) with a PUT to /api/joke:
