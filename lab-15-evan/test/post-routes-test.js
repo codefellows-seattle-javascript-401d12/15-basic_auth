@@ -28,7 +28,7 @@ const exampleBlog = {
 const examplePost = {
   name: 'example post',
   desc: 'example post description',
-  image: `${__dirname}/data/galactic.png`
+  image: `${__dirname}/data/tester.png`
 };
 
 describe('Post Routes', function() {
@@ -97,7 +97,63 @@ describe('Post Routes', function() {
           expect(res.body.blogID).to.equal(this.tempBlog._id.toString());
           done();
         });
+      })
+      .timeout(6000);
+    });
+  });
+
+  describe('DELETE: /api/post/:id', function() {
+    describe('with a valid token and data', function() {
+      before( done => {
+        new Member(exampleMember)
+        .generatePasswordHash(exampleMember.password)
+        .then( member => member.save())
+        .then( member => {
+          this.tempMember = member;
+          return member.generateToken();
+        })
+        .then( token => {
+          this.tempToken = token;
+          done();
+        })
+        .catch(done);
       });
+
+      before( done => {
+        exampleBlog.memberID = this.tempMember._id.toString();
+        new Blog(exampleBlog).save()
+        .then( blog => {
+          this.tempBlog = blog;
+          done();
+        })
+        .catch(done);
+      });
+
+      before( done => {
+        new Post(examplePost).save()
+        .then( post => {
+          this.tempPost = post;
+          done();
+        })
+        .catch(done);
+      });
+
+      after( done => {
+        delete exampleBlog.memberID;
+        done();
+      });
+
+      it('should respond with a 204', done => {
+        request.delete(`${url}/api/post/${this.tempPost._id}`)
+        .set({
+          Authorization: `Bearer ${this.tempToken}`
+        })
+        .end((err, res) => {
+          expect(res.status).to.equal(204);
+          done();
+        });
+      })
+      .timeout(6000);
     });
   });
 });

@@ -67,3 +67,23 @@ postRouter.post('/api/blog/:blogID/post', bearerAuth, jsonParser, upload.single(
   .then( post => res.json(post))
   .catch( err => next(err));
 });
+
+postRouter.delete('/api/post/:id', bearerAuth, function(req, res, next) {
+  debug('DELETE: /api/post/:id');
+
+  Post.findById(req.params.id)
+  .then( post => {
+    var objectKeyToDelete = post.objectKey;
+
+    let params = {
+      Bucket: process.env.AWS_BUCKET,
+      Key: objectKeyToDelete,
+    };
+
+    s3.deleteObject(params);
+    Post.findByIdAndRemove(req.params.id)
+    .then( () => res.status(204).send())
+    .catch( err => next(err));
+  })
+  .catch(err => next(err));
+});
