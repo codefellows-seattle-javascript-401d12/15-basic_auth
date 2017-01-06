@@ -70,8 +70,8 @@ imageRouter.post('/api/vault/:vaultID/image', bearerAuth, upload.single('image')
 
 });
 
-imageRouter.delete('/api/vault/:vaultID/image/:imageID', bearerAuth, function(req, res, next) {
-  debug('DELETE: /api/vault/:vaultID/image/:imageID');
+imageRouter.delete('/api/image/:imageID', bearerAuth, function(req, res, next) {
+  debug('DELETE: /api/image/:imageID');
 
   Image.findById(req.params.imageID)
   .then(image => {
@@ -80,14 +80,14 @@ imageRouter.delete('/api/vault/:vaultID/image/:imageID', bearerAuth, function(re
       Bucket: process.env.AWS_BUCKET,
       Key: image.objectKey
     };
-    s3.deleteObject(params, err => {
-      if(err) return next(err);
+    s3.deleteObject(params, (err) => {
+      if (err) return next(err);
     });
   })
   .catch(err => next(err));
 
   Image.findByIdAndRemove(req.params.imageID)
   .then(() => res.status(204).send())
-  .catch(err => next(err));
-  
+  .catch(next);
+
 });

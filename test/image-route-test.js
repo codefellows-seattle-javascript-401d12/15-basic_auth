@@ -30,6 +30,7 @@ const exampleImage = {
   image: `${__dirname}/data/test.png`
 };
 
+
 describe('Image Routes', function() {
   before( done => {
     serverToggle.serverOn(server, done);
@@ -102,6 +103,7 @@ describe('Image Routes', function() {
 
   // describe('DELETE:', function() {
   //   describe('with a vaild id', function() {
+  //
   //     it.only('should delete and return 204', done => {
   //       request.delete(`${url}/api/image/${this.tempImage._id}`)
   //       .set({
@@ -110,6 +112,7 @@ describe('Image Routes', function() {
   //       .end((err, res) => {
   //         if(err) return done(err);
   //         expect(res.status).to.equal(204);
+  //         expect(res.body).to.be.empty;
   //         done();
   //       });
   //     });
