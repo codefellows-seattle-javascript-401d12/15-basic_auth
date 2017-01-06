@@ -69,19 +69,16 @@ picRouter.post('/api/photobook/:photobookID/pic', bearerAuth, upload.single('ima
 });
 
 picRouter.delete('/api/photobook/:photobookID/pic/:picID', bearerAuth, function(req, res, next) {
-  debug('DELETE /api/photobook/:photobookID/pic/:picID');
+  debug('DELETE /api/photobook/:photobookID/pic/picIDs');
 
-  Pic.findById(req.params.picID)
-  .then( pic => {
-    var params = {
-      Bucket: process.env.AWS_BUCKET,
-      Key: pic.objectKey
-    };
-    return s3.deleteObject(params);
-  })
-  .catch(err => next(err));
+  let params = {
+    Bucket: process.env.AWS_BUCKET,
+    Key: req.params.imageID
+  };
 
-  Pic.findByIdAndRemove(req.params.picID)
-  .then( () => res.sendStatus(204) )
-  .catch(next);
+  s3.deleteObject(params);
+
+  Photobook.findByIdAndRemove(req.params.imageID)
+  .then( () => res.status(204).send())
+  .catch( err => next(createError(404, err.message)));
 });
