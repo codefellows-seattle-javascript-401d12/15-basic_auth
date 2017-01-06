@@ -33,6 +33,10 @@ const examplePic = {
   image: `${__dirname}/data/tester.png`
 };
 
+var tokenToDelete = '';
+var photobookToDelete = '';
+var picToDelete = '';
+
 describe('Pic Routes', function() {
   before( done => {
     serverToggle.serverOn(server, done);
@@ -42,7 +46,7 @@ describe('Pic Routes', function() {
     serverToggle.serverOff(server, done);
   });
 
-  afterEach( done => {
+  after( done => {
     Promise.all([
       Pic.remove({}),
       User.remove({}),
@@ -64,6 +68,7 @@ describe('Pic Routes', function() {
         })
         .then( token => {
           this.tempToken = token;
+          tokenToDelete = token;
           done();
         })
         .catch(done);
@@ -75,6 +80,7 @@ describe('Pic Routes', function() {
         new Photobook(examplePhotobook).save()
         .then( photobook => {
           this.tempPhotobook = photobook;
+          photobookToDelete = photobook;
           done();
         })
         .catch(done);
@@ -96,6 +102,7 @@ describe('Pic Routes', function() {
         .end((err, res) => {
           if (err) return done(err);
           expect(res.status).to.equal(200);
+          photobookToDelete = res.body;
           expect(res.body.name).to.equal(examplePic.name);
           expect(res.body.desc).to.equal(examplePic.desc);
           expect(res.body.photobookID).to.equal(this.tempPhotobook._id.toString());
@@ -104,62 +111,26 @@ describe('Pic Routes', function() {
       });
     });
   });
-});
 
-// describe('DELETE: /api/photobook/:photobookID/pic/:picID', () => {
-//   describe('with a valid token and valid data', () => {
-//     before( done => {
-//       new User(exampleUser)
-//       .generatePasswordHash(exampleUser.password)
-//       .then( user => user.save())
-//       .then( user => {
-//         this.tempUser = user;
-//         return user.generateToken();
-//       })
-//       .then( token => {
-//         this.tempToken = token;
-//         done();
-//       })
-//       .catch(done);
-//     });
-//
-//     before( done => {
-//       examplePhotobook.userID = this.tempUser._id.toString();
-//       new Photobook(examplePhotobook).save()
-//       .then( photobook => {
-//         this.tempPhotobook = photobook;
-//         done();
-//       })
-//       .catch(done);
-//     });
-//
-//     before( done => {
-//       examplePic.userID = this.tempUser._id.toString();
-//       examplePic.photobookID = this.tempPhotobook._id.toString();
-//       new Pic(examplePic).save()
-//       .then( pic => {
-//         this.tempPic = pic;
-//         done();
-//       })
-//       .catch(done);
-//     });
-//
-//     after(() => {
-//       delete examplePhotobook.userID;
-//       delete examplePic.userID;
-//       delete examplePic.photobookID;
-//     });
-//
-//     it('should return a 204 status code', done => {
-//       request.delete(`${url}/api/photobook/${this.tempPhotobook._id}/pic/${this.tempPic._id}`)
-//       .set({
-//         Authorization: `Bearer ${this.tempToken}`
-//       })
-//       .end((err, res) => {
-//         if (err) return done(err);
-//         expect(res.status).to.equal(204);
-//         done();
-//       });
-//     });
-//   });
-// });
+  describe('DELETE: /api/photobook/:id/pic/picID', function() {
+    describe('with a valid token and valid data', function() {
+
+      afterEach( done => {
+        delete examplePhotobook.userID;
+        done();
+      });
+
+      it('should delete a pic from picgram', done => {
+        request.delete(`${url}/api/photobook/${photobookToDelete._id}/pic/${picToDelete._id}`)
+        .set({
+          Authorization: `Bearer ${tokenToDelete}`
+        })
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.status).to.equal(204);
+          done();
+        });
+      });
+    });
+  });
+});
