@@ -22,15 +22,18 @@
   },
   "homepage": "https://github.com/codefellows-seattle-javascript-401d12/15-basic_auth#readme",
   "dependencies": {
+    "aws-sdk": "^2.7.21",
     "bcrypt": "^1.0.2",
     "body-parser": "^1.15.2",
     "crypto": "0.0.3",
     "debug": "^2.6.0",
+    "del": "^2.2.2",
     "dotenv": "^2.0.0",
     "express": "^4.14.0",
     "jsonwebtoken": "^7.2.1",
     "mongoose": "^4.7.5",
     "morgan": "^1.7.0",
+    "multer": "^1.2.1",
     "nodemon": "^1.11.0"
   },
   "devDependencies": {
