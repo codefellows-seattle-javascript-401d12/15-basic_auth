@@ -61,7 +61,7 @@ postRouter.post('/api/blog/:blogID/post', bearerAuth, jsonParser, upload.single(
       imageURI: s3data.Location,
       memberID: req.member._id,
       blogID: req.params.blogID
-    }
+    };
     return new Post(postData).save();
   })
   .then( post => res.json(post))

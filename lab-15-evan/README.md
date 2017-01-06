@@ -1,4 +1,4 @@
-# Lab 15 Basic Authorization
+# Lab 15 Basic Authorization, BearerAuth, AWS S3
 
 ## About
   This is an API, built utilizing ExpressJs and  MongoDB. The API is a work in progress built for the purpose of furthering an understanding of building a full CRUD RESTful API, with authorization and authentication. Bearer authentication is used to validate users when attempting to GET, POST, PUT or DELETE.

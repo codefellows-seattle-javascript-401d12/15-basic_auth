@@ -31,7 +31,7 @@ describe('Blog Routes', function() {
       Blog.remove({})
     ])
     .then( () => done())
-    .catch(done)
+    .catch(done);
   });
 
   describe('POST: /api/blog', () => {
@@ -88,7 +88,7 @@ describe('Blog Routes', function() {
       request.post(`${url}/api/blog`)
       .send(exampleBlog)
       .end((err, res) => {
-      expect(res.status).to.equal(401);
+        expect(res.status).to.equal(401);
         done();
       });
     });
@@ -427,11 +427,6 @@ describe('Blog Routes', function() {
     });
 
     it('should respond with a 404', done => {
-      let updatedBlog = {
-        name: 'updatedBlogName',
-        topic: 'updatedBlogTopic',
-        desc: 'updatedBlogDescription'
-      };
       request.put(`${url}/api/blog/${this.tempBlog._id}/9`)
       .send(null)
       .set({
