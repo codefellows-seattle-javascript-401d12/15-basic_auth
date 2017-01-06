@@ -99,59 +99,59 @@ describe('Pic Routes', function(){
     });
   });
 
-  describe('DELETE: /api/gallery/:galleryID/pic/:picID', function(){
-    describe('with a valid id', () => {
-      before(done => {
-        new User(exampleUser)
-        .generatePasswordHash(exampleUser.password)
-        .then(user => user.save())
-        .then( user => {
-          this.tempUser = user;
-          return user.generateToken();
-        })
-        .then(token => {
-          this.tempToken = token;
-          done();
-        })
-        .catch(done);
-      });
-      before(done => {
-        exampleGallery.userID = this.tempUser._id.toString();
-        new Gallery(exampleGallery).save()
-        .then(gallery =>{
-          this.tempGallery = gallery;
-          done();
-        })
-        .catch(done);
-      });
-      before(done => {
-        console.log(imageData);
-        examplePic.userID = this.tempUser._id.toString();
-        examplePic.galleryID = this.tempGallery._id.toString();
-        examplePic.imageURI = imageData.imageURI;
-        examplePic.objectKey = imageData.objectKey;
-        new Pic(examplePic).save()
-        .then(pic => {
-          this.tempPic = pic;
-          done();
-        })
-        .catch(done);
-      })
-      after(done => {
-        delete exampleGallery.userID;
-        done();
-      });
-      it('should remove the pic', done => {
-        request.delete(`${url}/api/gallery/${this.tempGallery._id}/pic/${this.tempPic._id}`)
-        .set({
-          Authorization: `Bearer ${this.tempToken}`
-        })
-        .end((err,res) => {
-          if(err) return done(err);
-          expect(res.status).to.equal(204);
-          done();
-        })
-      });
-    });
-  });
+  // describe('DELETE: /api/gallery/:galleryID/pic/:picID', function(){
+  //   describe('with a valid id', () => {
+  //     before(done => {
+  //       new User(exampleUser)
+  //       .generatePasswordHash(exampleUser.password)
+  //       .then(user => user.save())
+  //       .then( user => {
+  //         this.tempUser = user;
+  //         return user.generateToken();
+  //       })
+  //       .then(token => {
+  //         this.tempToken = token;
+  //         done();
+  //       })
+  //       .catch(done);
+  //     });
+  //     before(done => {
+  //       exampleGallery.userID = this.tempUser._id.toString();
+  //       new Gallery(exampleGallery).save()
+  //       .then(gallery =>{
+  //         this.tempGallery = gallery;
+  //         done();
+  //       })
+  //       .catch(done);
+  //     });
+  //     before(done => {
+  //       console.log(imageData);
+  //       examplePic.userID = this.tempUser._id.toString();
+  //       examplePic.galleryID = this.tempGallery._id.toString();
+  //       examplePic.imageURI = imageData.imageURI;
+  //       examplePic.objectKey = imageData.objectKey;
+  //       new Pic(examplePic).save()
+  //       .then(pic => {
+  //         this.tempPic = pic;
+  //         done();
+  //       })
+  //       .catch(done);
+  //     })
+  //     after(done => {
+  //       delete exampleGallery.userID;
+  //       done();
+  //     });
+  //     it('should remove the pic', done => {
+  //       request.delete(`${url}/api/gallery/${this.tempGallery._id}/pic/${this.tempPic._id}`)
+  //       .set({
+  //         Authorization: `Bearer ${this.tempToken}`
+  //       })
+  //       .end((err,res) => {
+  //         if(err) return done(err);
+  //         expect(res.status).to.equal(204);
+  //         done();
+  //       })
+  //     });
+  //   });
+  // });
 });
