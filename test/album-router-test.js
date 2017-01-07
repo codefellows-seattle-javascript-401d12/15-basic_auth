@@ -13,7 +13,7 @@ mongoose.Promise = Promise;
 
 require('../server.js');
 
-const url = `user://localhost:${process.env.PORT}/api/album`;
+const url = `http://localhost:${process.env.PORT}/api/album`;
 
 const testUser = {
   username: 'testUser',
@@ -34,7 +34,7 @@ describe('album-router-test', function(){
     .then(() => user.save())
     .then( () => {
       this.testUser = user;
-      user.generateToken();
+      return user.generateToken();
     })
     .then( token =>{
       this.token = token;
@@ -42,14 +42,20 @@ describe('album-router-test', function(){
     })
    .catch(done);
   });
-  afterEach( done =>{
-    User.remove({})
-    .then( () => done())
+  after( done =>{
+    Album.remove({})
+      .then( () => {
+        debug('testAlbum deleted');
+        done();
+      })
     .catch(done);
   });
-  afterEach( done =>{
-    Album.remove({})
-    .then( () => done())
+  after( done =>{
+    User.remove({})
+      .then( () => {
+        debug('testUser deleted');
+        done();
+      })
     .catch(done);
   });
 
@@ -57,7 +63,7 @@ describe('album-router-test', function(){
     it('should post request with a valid body', done => {
       debug('should post request with a valid body');
       request.post(`${url}`)
-     .set({Authorization: `Bearer ${this.temptoken}`})
+     .set({Authorization: `Bearer ${this.token}`})
      .send(testAlbum)
      .end( (err, res) => {
        if(err) return done(err);
@@ -65,8 +71,8 @@ describe('album-router-test', function(){
        expect(res.status).to.equal(200);
        expect(res.body.name).to.equal('testName');
        expect(res.body.desc).to.equal('testDesc');
+       done();
      });
-      done();
     });
 
     it('should say no token was provided', done => {
@@ -74,36 +80,31 @@ describe('album-router-test', function(){
       request.post(`${url}`)
      .send(testAlbum)
      .end( (err, res) => {
-       if(err) return done(err);
-
        expect(res.status).to.equal(401);
+       expect(res.text).to.equal('UnauthorizedError');
+       done();
      });
-      done();
     });
 
     it('should say route is not registered', done => {
       debug('should say route is not registered');
       request.post(`${url}/akk`)
-     .set({Authorization: `Bearer ${this.temptoken}`})
+     .set({Authorization: `Bearer ${this.token}`})
      .send(testAlbum)
      .end( (err, res) => {
-       if(err) return done(err);
-
        expect(res.status).to.equal(404);
+       done();
      });
-      done();
     });
     it('should say no body was provided or if the body was invalid', done => {
       debug('no body was provided or if the body was invalid');
       request.post(`${url}`)
-     .set({Authorization: `Bearer ${this.temptoken}`})
+     .set({Authorization: `Bearer ${this.token}`})
      .send({name: 'abc'})
      .end( (err, res) => {
-       if(err) return done(err);
-
        expect(res.status).to.equal(400);
+       done();
      });
-      done();
     });
   });
 
@@ -120,44 +121,40 @@ describe('album-router-test', function(){
     it('should get an Album', done => {
       debug('get an album');
       request.get(`${url}/${this.testAlbum._id}`)
-     .set({Authorization: `Bearer ${this.temptoken}`})
+      .set({
+        Authorization: `Bearer ${this.token}`
+      })
      .end( (err, res) => {
        if(err) return done(err);
 
        expect(res.status).to.equal(200);
        expect(res.body.name).to.equal('testName');
        expect(res.body.desc).to.equal('testDesc');
+       done();
      });
-      done();
     });
     it('should say no token was provided', done => {
       debug('no token');
       request.get(`${url}/${this.testAlbum._id}`)
      .end( (err, res) => {
-       if(err) return done(err);
-
        expect(res.status).to.equal(401);
-       User.remove({});
+       done();
      });
-      done();
     });
 
     it('valid request with an id that was not found', done => {
       debug('id not found');
       request.get(`${url}/123456789000`)
-     .set({Authorization: `Bearer ${this.temptoken}`})
+     .set({Authorization: `Bearer ${this.token}`})
      .end( (err, res) => {
-       if(err) return done(err);
-
        expect(res.status).to.equal(404);
+       done();
      });
-      done();
     });
 
   });
 
-  describe('PUT ', () => {
-    debug('put');
+  describe('PUT ROUTES', () => {
     before( done => {
       testAlbum.userID = this.testUser._id;
       new Album(testAlbum).save()
@@ -167,56 +164,93 @@ describe('album-router-test', function(){
       })
      .catch(done);
     });
-    it('should put request with a valid body', done => {
-      debug('put valid body valid request');
+    it('should update the album', done => {
+      debug('valid request with valid body');
       request.put(`${url}/${this.testAlbum._id}`)
-     .set({Authorization: `Bearer ${this.temptoken}`})
-     .send({name: 'update name'})
-     .end( (err, res) => {
-       if(err) return done(err);
+      .set({
+        Authorization: `Bearer ${this.token}`
+      })
+      .send({name:'update name'})
+      .end( (err, res) => {
+        if(err) return done(err);
+        expect(res.status).to.equal(200);
+        expect(res.body.name).to.equal('update name');
+        expect(res.body.desc).to.equal('testDesc');
 
-       expect(res.status).to.equal(200);
-       expect(res.body.name).to.equal('update name');
-       expect(res.body.desc).to.equal('testDesc');
-     });
-      done();
+        done();
+      });
     });
     it('should say no token was provided', done => {
       debug('put: no token');
       request.put(`${url}/${this.testAlbum._id}`)
-     .send({name: 'update name'})
+     .send({'name':'update name'})
      .end( (err, res) => {
-       if(err) return done(err);
-       console.log(res.msg);
        expect(res.status).to.equal(401);
+       expect(res.text).to.equal('UnauthorizedError');
+       done();
      });
-      done();
     });
     it('should say invalid body', done => {
       debug('put: invalid body in valid request');
       request.put(`${url}/${this.testAlbum._id}`)
-     .set({Authorization: `Bearer ${this.temptoken}`})
-     .send({Name: 'update name', content: 'some'})
+      .set({Authorization: `Bearer ${this.token}`})
+     .send({'apple': 'some'})
      .end( (err, res) => {
-       if(err) return done(err);
-
        expect(res.status).to.equal(400);
+       expect(res.text).to.equal('BadRequestError');
+       done();
      });
-      done();
     });
     it('should  say valid request made with an invalid id', done => {
       debug('put: valid body invalid id');
-      request.put(`${url}/1234567890123456789`)
-     .set({Authorization: `Bearer ${this.temptoken}`})
+      request.put(`${url}//5871546b8ad39926589b0000`)
+     .set({Authorization:`Bearer ${this.token}`})
      .send({name: 'update name'})
      .end( (err, res) => {
-       if(err) return done(err);
-
-       expect(res.status).to.equal(200);
-       expect(res.body.name).to.equal('update name');
-       expect(res.body.desc).to.equal('testDesc');
+       expect(res.status).to.equal(404);
+       done();
      });
-      done();
+    });
+  });
+  describe('DELETE ROUTES', () => {
+    before( done => {
+      testAlbum.userID = this.testUser._id;
+      new Album(testAlbum).save()
+      .then( album =>{
+        this.testAlbum = album;
+        done();
+      })
+     .catch(done);
+    });
+    it('should delete the album', done => {
+      debug('valid request valid id');
+      request.delete(`${url}/${this.testAlbum._id}`)
+      .set({
+        Authorization: `Bearer ${this.token}`
+      })
+      .end( (err, res) => {
+        if(err) return done(err);
+        expect(res.status).to.equal(200);
+        done();
+      });
+    });
+    it('should say no token was provided', done => {
+      debug('delete: no token');
+      request.delete(`${url}/${this.testAlbum._id}`)
+     .end( (err, res) => {
+       expect(res.status).to.equal(401);
+       expect(res.text).to.equal('UnauthorizedError');
+       done();
+     });
+    });
+    it('should  say an invalid id', done => {
+      debug('delete: valid body invalid id');
+      request.delete(`${url}//5871546b8ad39926589b0000`)
+     .set({Authorization:`Bearer ${this.token}`})
+     .end( (err, res) => {
+       expect(res.status).to.equal(404);
+       done();
+     });
     });
   });
 });

@@ -20,6 +20,7 @@ const userSchema = Schema({
 
 userSchema.methods.generatePasswordHash = function(password){
   debug('generatePasswordHash');
+  if (!password) return reject(createError(400, 'bad request'));
 
 
   return new Promise((resolve, reject) => {
@@ -39,7 +40,6 @@ userSchema.methods.comparePasswordHash = function(password){
       if (err) return reject(createError(400, 'bad request'));
 
       if(!valid) return reject(createError(401, 'Unauthorized User'));
-
       resolve(this);
     });
   });
@@ -66,7 +66,6 @@ userSchema.methods.generateFindHash = function(){
 
 userSchema.methods.generateToken = function(){
   debug('generateToken');
-
   return new Promise((resolve, reject) => {
     this.generateFindHash()
     .then( findHash => resolve(jwt.sign({token: findHash}, process.env.APP_SECRET)))

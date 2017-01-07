@@ -40,17 +40,23 @@ albumRouter.get('/api/album/:id', bearerAuth, jsonParser, function(req, res, nex
   .catch(next);
 });
 
-albumRouter.put('/api/album', bearerAuth, jsonParser, function(req, res, next){
-  debug('PUT: /api/album');
-
+albumRouter.put('/api/album/:id', bearerAuth, jsonParser, function(req, res, next){
+  debug('PUT: /api/album/:id');
+  if(!req.params.id) return next(createError(400, 'bad request \n id required'));
   req.body.userID = req.user._id;
 
   if(!req.body.userID) return next(createError(400, 'bad request \n token required'));
 
-  Album.findOne({ _id: req.body.id})
+  Album.findOne({ _id: req.params.id})
   .then( album => {
-    for(var prop in album){
-      if(req.body[prop]) album[prop] = req.body[prop];
+    if(!album) return next(createError(404, 'not a valid id'));
+    for (var prop in req.body) {
+      if( album[prop] ) {
+        album[prop] = req.body[prop];
+      }
+      if( !album[prop]){
+        return next(createError(400, 'not a valid body'));
+      }
     }
     res.json(album);
   })
