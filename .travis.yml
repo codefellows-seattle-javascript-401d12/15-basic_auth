@@ -15,7 +15,6 @@
   sudo: required
   before_script:
     - npm i
-    - npm i -g gulp
   script:
     - npm run lint
     - npm run test
