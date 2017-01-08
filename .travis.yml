@@ -1,6 +1,6 @@
   language: node_js
   node_js:
-    - '6'
+    - 'stable'
   services:
     - mongodb
   addons:
@@ -14,7 +14,6 @@
     - CXX=g++-4.8
   sudo: required
   before_script:
-    - npm i -g gulp
+    - npm i
   script:
-    - npm run lint
     - npm run test
