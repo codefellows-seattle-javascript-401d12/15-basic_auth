@@ -54,7 +54,7 @@ vidRouter.delete('/api/vid/:id', AuthBearer, JsonParser, function(req, res, next
     S3.deleteObject({
       Bucket: process.env.AWS_BUCKET,
       Key: toBeRemovedVid.s3ObjectKey,
-    }, (err, s3data) => {
+    }, (err) => {
       if(err) return next(HttpError(500, 'cannot delete S3 object'));
     });
 
