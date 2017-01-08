@@ -3,7 +3,7 @@
 const gulp = require('gulp');
 //const fs = require('fs');
 const eslint = require('gulp-eslint');
-//const mocha = require('gulp-mocha');
+const mocha = require('gulp-mocha');
 
 gulp.task('test', function() {
   return gulp.src('./test/*-test.js', {read: false})
