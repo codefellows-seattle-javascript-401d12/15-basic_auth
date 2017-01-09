@@ -1,7 +1,7 @@
 'use strict';
 
 const express = require('express');
-//const cors = require('cors');
+const cors = require('cors');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
@@ -22,7 +22,7 @@ mongoose.Promise = Promise;
 const app = express();
 mongoose.connect(process.env.MONGODB_URI);
 
-//app.use(cors());
+app.use(cors());
 app.use(morgan('dev'));
 app.use(kauthRouter);
 app.use(jokeRouter);
