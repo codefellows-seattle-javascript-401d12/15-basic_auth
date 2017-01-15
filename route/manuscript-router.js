@@ -71,15 +71,19 @@ manuscriptRouter.post('/api/publisher/:publisherID/manuscript', bearerAuth, uplo
 manuscriptRouter.delete('/api/publisher/:publisherID/manuscript/:manuscriptID', bearerAuth, function(req, res, next) {
   debug('DELETE: /api/publisher/:publisherID/manuscript/:manuscriptID');
 
-  let ext = path.extname(req.file.originalname);
+  Manuscript.findById(req.params.manuscriptID)
+  .then(manuscript => {
+    let params = {
+      Bucket: process.env.AWS_BUCKET,
+      Key: manuscript.objectKey
+    };
 
-  let params = {
-    Bucket: process.env.AWS_BUCKET,
-    Key: `${req.file.filename}${ext}`,
-  };
-
-  Manuscript.findByIdAndRemove(req.params.manuscriptID)
-  .then(() => s3.deleteObject(params))
-  .then(() => res.status(204).send())
-  .catch(err => next(err));
+    s3.deleteObject(params, (err) => {
+      if (err) return next(err);
+      Manuscript.findByIdAndRemove(req.params.manuscriptID)
+      .then(() => res.status(204).send())
+      .catch(err => next(createError(404, err.message)));
+    });
+  })
+  .catch(err => next(createError(404, err.message)));
 });
