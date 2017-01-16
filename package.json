@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "DEBUG='cfgram*' mocha",
+    "test": "DEBUG='cfgram*' mocha --timeout 6000",
     "start": "DEBUG='cfgram*' node server.js"
   },
   "repository": {

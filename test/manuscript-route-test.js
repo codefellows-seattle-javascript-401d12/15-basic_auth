@@ -33,6 +33,8 @@ const testManuscript = {
   doc: `${__dirname}/data/tester.txt`
 };
 
+let manuscriptData = {};
+
 describe('Manuscript Routes', function() {
   before(done => {
     serverToggle.serverOn(server, done);
@@ -44,9 +46,9 @@ describe('Manuscript Routes', function() {
 
   afterEach(done => {
     Promise.all([
-      Manuscript.remove({}),
       User.remove({}),
-      Publisher.remove({})
+      Publisher.remove({}),
+      Manuscript.remove({})
     ])
     .then(() => done())
     .catch(done);
@@ -54,6 +56,55 @@ describe('Manuscript Routes', function() {
 
   describe('POST: /api/publisher/:publisherID/manuscript', function() {
     describe('with a valid token and valid data', function() {
+      before(done => {
+        new User(testUser)
+        .generatePasswordHash(testUser.password)
+        .then(user => user.save())
+        .then(user => {
+          this.tempUser = user;
+          return user.generateToken();
+        })
+        .then(token => {
+          this.tempToken = token;
+          testPublisher.userID = this.tempUser._id.toString();
+          return new Publisher(testPublisher).save();
+        })
+        .then(publisher => {
+          this.tempPublisher = publisher;
+          done();
+        })
+        .catch(done);
+      });
+
+      after(done => {
+        delete testPublisher.userID;
+        done();
+      });
+
+      it('should return a txt file', done => {
+        request.post(`${url}/api/publisher/${this.tempPublisher._id}/manuscript`)
+        .set({
+          Authorization: `Bearer ${this.tempToken}`
+        })
+        .field('name', testManuscript.name)
+        .field('desc', testManuscript.desc)
+        .attach('doc', testManuscript.doc)
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.status).to.equal(200);
+          expect(res.body.name).to.equal(testManuscript.name);
+          expect(res.body.desc).to.equal(testManuscript.desc);
+          expect(res.body.publisherID).to.equal(this.tempPublisher._id.toString());
+          manuscriptData = res.body;
+          done();
+        });
+      });
+
+    });
+  });
+
+  describe('DELETE: /api/publisher/:publisherID/manuscript/:manuscriptID', () => {
+    describe('with a valid token and valid ID', () => {
       before(done => {
         new User(testUser)
         .generatePasswordHash(testUser.password)
@@ -79,40 +130,38 @@ describe('Manuscript Routes', function() {
         .catch(done);
       });
 
+      before(done => {
+        console.log('anything?');
+        testManuscript.userID = this.tempUser._id.toString();
+        testManuscript.publisherID = this.tempPublisher._id.toString();
+        console.log(testManuscript.publisherID);
+        testManuscript.docURI = manuscriptData.docURI;
+        console.log(testManuscript.docURI);
+        testManuscript.objectKey = manuscriptData.objectKey;
+        console.log(testManuscript.objectKey);
+        new Manuscript(testManuscript).save()
+        .then(manuscript => {
+          this.tempManuscript = manuscript;
+          done();
+          console.log(testManuscript);
+        })
+        .catch(done);
+      });
+
+
       after(done => {
         delete testPublisher.userID;
+        delete testManuscript.userID;
+        delete testManuscript.galleryID;
         done();
       });
 
-      it.only('should return a txt file', done => {
-        request.post(`${url}/api/publisher/${this.tempPublisher._id}/manuscript`)
+      it('should return a 204 status for successful deletion', done => {
+        request.delete(`${url}/api/publisher/${this.tempPublisher._id}/manuscript/${this.tempManuscript._id}`)
         .set({
           Authorization: `Bearer ${this.tempToken}`
         })
-        .field('name', testManuscript.name)
-        .field('desc', testManuscript.desc)
-        .attach('doc', testManuscript.doc)
         .end((err, res) => {
-          if (err) return done(err);
-          expect(res.status).to.equal(200);
-          expect(res.body.name).to.equal(testManuscript.name);
-          expect(res.body.desc).to.equal(testManuscript.desc);
-          expect(res.body.publisherID).to.equal(this.tempPublisher._id.toString());
-          done();
-        });
-      });
-
-    });
-  });
-
-  describe('DELETE: /api/publisher/:publisherID/manuscript/:manuscriptID', () => {
-    describe('with a valid token and valid ID', () => {
-      it.only('should return a 204 status for successful deletion', done => {
-        request.delete(`${url}/api/publisher/${this.tempPublisher._id}/manuscript/${this.testManuscript._id}`)
-        .set({
-          Authorization: `Bearer ${this.tempToken}`
-        })
-        .end(res => {
           expect(res.status).to.equal(204);
           done();
         });
