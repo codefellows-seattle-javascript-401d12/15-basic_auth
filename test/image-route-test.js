@@ -30,6 +30,7 @@ const exampleImage = {
   image: `${__dirname}/data/test.png`
 };
 
+let imageData = {};
 
 describe('Image Routes', function() {
   before( done => {
@@ -101,21 +102,67 @@ describe('Image Routes', function() {
     });
   });
 
-  // describe('DELETE:', function() {
-  //   describe('with a vaild id', function() {
-  //
-  //     it.only('should delete and return 204', done => {
-  //       request.delete(`${url}/api/image/${this.tempImage._id}`)
-  //       .set({
-  //         Authorization: `Bearer ${this.tempToken}`
-  //       })
-  //       .end((err, res) => {
-  //         if(err) return done(err);
-  //         expect(res.status).to.equal(204);
-  //         expect(res.body).to.be.empty;
-  //         done();
-  //       });
-  //     });
-  //   });
-  // });
+  describe('DELETE:', () => {
+
+    beforeEach( done => {
+      new User(exampleUser)
+      .generatePasswordHash(exampleUser.password)
+      .then( user => user.save())
+      .then( user => {
+        this.tempUser = user;
+        return user.generateToken();
+      })
+      .then( token => {
+        this.tempToken = token;
+        done();
+      })
+      .catch(done);
+    });
+
+    beforeEach( done => {
+      exampleVault.userID = this.tempUser._id.toString();
+      new Vault(exampleVault).save()
+      .then( gallery => {
+        this.tempGallery = gallery;
+        done();
+      })
+      .catch(done);
+    });
+
+    afterEach( done => {
+      delete exampleVault.userID;
+      delete exampleImage.galleryID;
+      delete exampleImage.userID;
+      done();
+    });
+
+    beforeEach(done => {
+      exampleImage.userID = this.tempUser._id.toString();
+      exampleImage.galleryID = this.tempGallery._id.toString();
+      exampleImage.imageURI = imageData.imageURI;
+      exampleImage.objectKey = imageData.objectKey;
+      new Image(exampleImage).save()
+      .then(image => {
+        this.tempImage = image;
+        done();
+      })
+      .catch(done);
+    });
+
+
+    describe('with a vaild id', () => {
+      it('should delete and return 204', done => {
+        request.delete(`${url}/api/vault/${this.tempVault._id}/image/${this.tempImage._id}`)
+        .set({
+          Authorization: `Bearer ${this.tempToken}`
+        })
+        .end((err, res) => {
+          if(err) return done(err);
+          expect(res.status).to.equal(204);
+          expect(res.body).to.be.empty;
+          done();
+        });
+      });
+    });
+  });
 });
