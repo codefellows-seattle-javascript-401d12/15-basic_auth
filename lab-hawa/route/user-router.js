@@ -2,10 +2,8 @@
 
 const jsonParser = require('body-parser').json();
 const debug = require('debug')('cfgram:auth-router');
-const createError = require('http-errors');
 const Router = require('express').Router;
 const basicAuth = require('../lib/basic-auth-middleware.js');
-const bearerAuth = require('../lib/bearer-auth-middleware.js');
 
 const User = require('../model/user.js');
 

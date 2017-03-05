@@ -3,6 +3,7 @@
 #!! ERROR: ma is undefined. Use list command to see defined gitignore types !!#
 
 node_modules/
+.env
 
 ### Node ###
 # Logs
